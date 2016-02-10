@@ -4,19 +4,29 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
   <meta charset="utf-8">
   <title>CH2</title>
+  <style>
+    .author {
+      background-color : #AAAAAA;
+    }
+  </style>
 </head>
 <body ng-controller="MainCtrl as ctrl">
 
   <table border="1" cellpadding="1" cellspacing="1">
     <tr>
-      <td>Author</td>
       <td>Label</td>
       <td>Done</td>
       <td>Index</td>
     </tr>
+    <!-- 
+    	少數情況下會用到的標籤 (ng-repeat-start & ng-repeat-end)
+    	表達 ng-repeat 的起點與終點的綜合運用
+    -->
+    <tr ng-repeat-start="(author,note) in ctrl.notes">
+      <td colspan="3" ng-bind="author" ng-class="ctrl.authorClass"></td>
+    </tr>
     <!-- key,value 組合 -->
-    <tr ng-repeat="(author,note) in ctrl.notes">
-      <td ng-bind="author"></td>
+    <tr ng-repeat-end="(author,note) in ctrl.notes">
       <td ng-bind="note.label"></td>
       <td ng-bind="note.done"></td>
       <!-- ng-repeat 隱含的物件，指向 current index -->
@@ -28,6 +38,7 @@
     var kbApp = angular.module('kbApp',[]);
     kbApp.controller('MainCtrl',[function(){
       var self = this;
+      self.authorClass = 'author';
       self.notes = {
         shyam: {
           id: 1,
