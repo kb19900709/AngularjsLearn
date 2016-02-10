@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<meta name="robots" content="noindex">
+<html ng-app="kbApp">
+<head>
+<meta name="description" content="[2016/02/10:angularjs practice ng-repeat 2]">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>CH2</title>
+  <style>
+    .done{
+      background-color: green;
+    }
+    
+    .pending{
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <div ng-controller="MainCtrl as ctrl">
+    <table border="1" cellpadding="1" cellspacing="1">
+      <tr>
+        <td>Label</td>
+        <td>Assignee</td>
+      </tr>
+      <tr ng-repeat="note in ctrl.notes">
+        <td ng-bind="note.label"></td>
+        <td ng-class="ctrl.getNoteClass(note.done)">
+          <span ng-bind="note.assignee"></span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  
+  <script>
+    angular.module('kbApp',[]).controller('MainCtrl',[function(){
+      var self = this;        
+      self.notes = [
+        {label: 'First Note', done: false, assignee: 'Shyam'},
+        {label: 'Second Note', done: false},
+        {label: 'Done Note', done: true},
+        {label: 'Last Note', done: false, assignee: 'Brad'}
+      ];
+      self.getNoteClass = function(status){
+        return {
+          done : status
+          ,pending : !status
+        }
+      }
+    }]);
+  </script>
+</body>
+</html>
