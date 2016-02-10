@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <meta charset="utf-8">
+  <title>CH2</title>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+  
+  <button ng-click="ctrl.changeNotes()">Change Notes</button>
+  <br/>
+  DOM Elements change every time someone clicks
+  <!-- 一般的ng-repeat表示式 -->
+  <div ng-repeat="note in ctrl.notes1">
+  	<!-- Angular物件雜湊表示式 -->
+    {{note.$$hashKey}}
+    <span ng-bind="note.label"></span>
+    <span ng-bind="note.done"></span>
+  </div>
+
+  <br/>
+  DOM Elements are reused every time someone clicks
+  <!-- 
+  	透過track-by表示式，說明如果note.id一樣的話，將重複使用DOM的元素 (但是值會替換) 
+  	效能最佳化考量
+  	使用情境 : maintain something and query about this
+  -->
+  <div ng-repeat="note in ctrl.notes2 track by note.id">
+  	<!-- Angular物件雜湊表示式 -->
+    {{note.$$hashKey}}
+    <span ng-bind="note.label"></span>
+    <span ng-bind="note.done"></span>
+  </div>
+  
+  <script>
+    var kbApp = angular.module('kbApp',[]);
+    kbApp.controller('MainCtrl',[function(){ 
+      var self = this;
+      var notes = [
+        {
+          id: 1,
+          label: 'First Note',
+          done: false,
+          someRandom: 31431}, 
+        {
+          id: 2,
+          label: 'Second Note',
+          done: false},
+        {
+          id: 3,
+          label: 'Finished Third Note',
+          done: true
+        }
+      ];
+      
+      //複製陣列到實體變數上
+      self.notes1 = angular.copy(notes);
+      self.notes2 = angular.copy(notes);
+      
+      self.changeNotes = function(){
+        var notes = [
+          {
+            id: 1,
+            label: 'Changed Note',
+            done: true,
+            someRandom: 4242
+          },
+          {
+            id: 2,
+            label: 'Second Note',
+            done: false
+          },
+          {
+            id: 3,
+            label: 'Finished Third Note',
+            done: true
+          }
+        ];
+        
+        //複製一組一樣的陣列(物件的值稍有異動)到實體變數上
+        self.notes1 = angular.copy(notes);
+        self.notes2 = angular.copy(notes);
+      };
+    }]);
+  </script>
+</body>
+</html>

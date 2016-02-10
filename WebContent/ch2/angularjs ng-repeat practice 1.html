@@ -1,34 +1,30 @@
 <!DOCTYPE html>
-<meta name="robots" content="noindex">
-<meta name="robots" content="noindex">
 <html ng-app="kbApp"> <!-- Angular app 應用程式宣告 -->
 <head>
-<meta name="description" content="[2016/02/10:angularjs practice ng-repeat 1]">
 <!-- 透過CDN載入Angular，當前第一版最新版本為 1.5.0 -->
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
   <title>CH2</title>
 </head>
-<body>
-  <!-- 
-  	宣告此區為Angular controller 控制範圍 
-  	ControllerAs : 取得Controller實例，並可使用實例的變數且呈現在HTML上 
-  	注意 : local variable 無法取得
-  -->
-  <div ng-controller="MainCtrl as ctrl">
-    <table cell  width="30%" align="legt" border="1" cellpadding="1" cellspacing="1">
-      <tr>
-        <td>Label</td>
-        <td>Done</td>
-      </tr>
-      <!-- template (for each) -->
-      <tr ng-repeat="note in ctrl.notes">
-        <td ng-click="ctrl.clickLabel(note)" ng-bind="note.label"></td>
-        <td ng-bind="note.done"></td>
-      </tr>
-    </table>
-  </div>
+<!-- 
+	宣告此區為Angular controller 控制範圍 
+	ControllerAs : 取得Controller實例，並可使用實例的變數或是函式且呈現在HTML上 
+	注意 : local variable 無法取得
+-->
+<body ng-controller="MainCtrl as ctrl">
+  
+  <table width="30%" align="legt" border="1" cellpadding="1" cellspacing="1">
+    <tr>
+      <td>Label</td>
+      <td>Done</td>
+    </tr>
+    <!-- template (for each) -->
+    <tr ng-repeat="note in ctrl.notes">
+      <td ng-click="ctrl.clickLabel(note)" ng-bind="note.label"></td>
+      <td ng-bind="note.done"></td>
+    </tr>
+  </table>
+    
   <script>
     //宣告建立一個kbApp的模組，裡面包含了一個controller
     angular.module('kbApp',[])

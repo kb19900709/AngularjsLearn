@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<meta name="robots" content="noindex">
 <html ng-app="kbApp">
 <head>
-<meta name="description" content="[2016/02/10:angularjs practice ng-repeat 2]">
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
   <title>CH2</title>
+  <!-- 一般的css -->
   <style>
     .done{
       background-color: green;
@@ -17,21 +15,24 @@
     }
   </style>
 </head>
-<body>
-  <div ng-controller="MainCtrl as ctrl">
-    <table border="1" cellpadding="1" cellspacing="1">
-      <tr>
-        <td>Label</td>
-        <td>Assignee</td>
-      </tr>
-      <tr ng-repeat="note in ctrl.notes">
-        <td ng-bind="note.label"></td>
-        <td ng-class="ctrl.getNoteClass(note.done)">
-          <span ng-bind="note.assignee"></span>
-        </td>
-      </tr>
-    </table>
-  </div>
+<body ng-controller="MainCtrl as ctrl">
+
+  <table border="1" cellpadding="1" cellspacing="1">
+    <tr>
+      <td>Label</td>
+      <td>Assignee</td>
+    </tr>
+    <tr ng-repeat="note in ctrl.notes">
+      <td ng-bind="note.label"></td>
+      <!-- 
+      	ng-class : 選擇性的套用css，可接受字串或是物件 
+      	如果是物件，則會根據物件的 key:boolean 自動去選擇套入css
+      -->
+      <td ng-class="ctrl.getNoteClass(note.done)">
+        <span ng-bind="note.assignee"></span>
+      </td>
+    </tr>
+  </table>
   
   <script>
     angular.module('kbApp',[]).controller('MainCtrl',[function(){
