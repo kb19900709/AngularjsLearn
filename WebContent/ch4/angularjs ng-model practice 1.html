@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <meta charset="utf-8">
+  <title>CH4</title>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+  <!-- 
+  	利用 ng-model 實踐 two way data binding，see >>> https://docs.angularjs.org/guide/databinding
+  -->
+  <input type="text" ng-model="ctrl.userName" placeholder="enter your name"/>
+  <br/><br/>
+  <button ng-click="ctrl.getUserName()">get your name</button>  
+  
+  <script>
+    var kbApp = angular.module('kbApp',[]);
+    kbApp.controller('MainCtrl',[function(){
+      var self = this;
+      //即使沒有任何預設值，在使用 ng-model directive 之後也將自動產生實體變數在該controller上
+      self.userName = null;
+      self.getUserName = function(){
+        alert('your name : '+self.userName);
+      }
+    }]);
+  </script>
+</body>
+</html>
