@@ -7,21 +7,64 @@
 </head>
 <body ng-controller="MainCtrl as ctrl">
   <!-- 
-  	利用 ng-model 實踐 two way data binding，see >>> https://docs.angularjs.org/guide/databinding
-  -->
-  <input type="text" ng-model="ctrl.userName" placeholder="enter your name"/>
-  <br/><br/>
-  <button ng-click="ctrl.getUserName()">get your name</button>  
+  	ng-submit : 提交表單，包括使用者在input標籤上鍵入enter也會觸發 (此處為Angularjs優化)
+   -->
+  <form ng-submit="ctrl.submit()">
+    <!-- 
+      利用 ng-model 實踐 two way data binding，see >>> https://docs.angularjs.org/guide/databinding
+    -->
+    <input type="text" ng-model="ctrl.user.userName"  placeholder="enter your name" />
+    <br/><br/>
+    <input type="text" ng-model="ctrl.user.userPhone" placeholder="enter your phone" />
+    <br/><br/>
+    <button type="submit">Submit</button>
+    <button type="button" ng-click="ctrl.getDataFromAP()">Refresh</button>
+  </form>
   
   <script>
     var kbApp = angular.module('kbApp',[]);
-    kbApp.controller('MainCtrl',[function(){
+    kbApp.controller('MainCtrl',[function(){    
+      
       var self = this;
-      //即使沒有任何預設值，在使用 ng-model directive 之後也將自動產生實體變數在該controller上
-      self.userName = null;
-      self.getUserName = function(){
-        alert('your name : '+self.userName);
+   
+      //即使controller沒有任何預設物件，在使用 ng-model directive 之後
+      //只要使用者有鍵入對應的input，將自動產生實體變數的對應在該controller與HTML上
+      self.user = {};
+      
+      //模擬送出資料。透過 two way data binding 的特性，取出controller裡的model做資料處理
+      self.submit = function(){
+        if(isEmpty(self.user)){
+          alert('your name : '+self.user.userName+'\nyour phone : '+self.user.userPhone);
+        }else{
+          alert('please enter your info');
+        }        
       }
+      
+      //模擬從資料庫取得資料。透過 two way data binding 的特性，更新model == 刷新view表單上對應的data
+      self.getDataFromAP = function(){
+        self.user.userName = 'KB';
+        self.user.userPhone = '0952******';
+      }
+      
+      function isEmpty(obj){
+        if(obj){
+          var flag = true;
+          for(var prop in obj){
+            if(obj[prop]){
+              flag = false;
+            }
+          }
+          
+          if(flag){
+            return false;
+          }else{
+            return true;
+          }
+        }else{
+          return false;
+        }
+      }
+      
     }]);
   </script>
 </body>
