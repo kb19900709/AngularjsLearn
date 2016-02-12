@@ -33,7 +33,7 @@
       
       //模擬送出資料。透過 two way data binding 的特性，取出controller裡的model做資料處理
       self.submit = function(){
-        if(isEmpty(self.user)){
+        if(isObjectEmpty(self.user)){
           alert('your name : '+self.user.userName+'\nyour phone : '+self.user.userPhone);
         }else{
           alert('please enter your info');
@@ -46,7 +46,7 @@
         self.user.userPhone = '0952******';
       }
       
-      function isEmpty(obj){
+      function isObjectEmpty(obj){
         if(obj){
           var flag = true;
           for(var prop in obj){

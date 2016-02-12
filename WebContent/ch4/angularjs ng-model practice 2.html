@@ -11,6 +11,11 @@
   </style>
 </head>
 <body ng-controller="MainCtrl as ctrl">
+  <!-- 
+  	當在form上給予屬性 name，Angularjs會建立一個FormController
+  	透過 formName.$helper or formName.field ...etc 取得對應的表單狀態
+  	see >>> https://docs.angularjs.org/api/ng/type/form.FormController  	
+   -->
   <form ng-submit="ctrl.submit()" name="myForm">
     name : 
       <input type="text" placeholder="enter your name" name="uName"
@@ -24,11 +29,17 @@
       <span class="valid" ng-show="myForm.uPassWord.$error.maxlength">請輸入至多6個字元</span>
     <br/><br/>
     age :
+      <!-- 綁定的物件將會是整數型態 -->
       <input type="number" placeholder="enter your age" ng-model="ctrl.user.age"/>
     <br/><br/>
     birthday :
+      <!-- 綁定的物件將會是 Date 型態 -->
       <input type="date" ng-model="ctrl.user.birthday"/>
     <br/><br/>
+    <!-- 
+    	如果表單狀態檢核有問題，則隱蔽功能 。
+    	注意:即使在表單上宣告 ng-submit，在input欄位鍵入enter，一樣無效
+    -->
     <button type="submit" ng-disabled="myForm.$invalid">Submit</button>
   </form>
 
@@ -37,6 +48,7 @@
     kbApp.controller('MainCtrl',[function(){
       var self = this;
       
+      //顯示當前userObject資訊
       self.submit = function(){
         if(self.user){
           var userInfo = '';
