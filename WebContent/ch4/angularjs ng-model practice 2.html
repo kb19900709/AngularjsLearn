@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <meta charset="utf-8">
+  <title>CH4</title>
+  <style>
+    .valid{
+      color:red;
+    }
+  </style>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+  <form ng-submit="ctrl.submit()" name="myForm">
+    name : 
+      <input type="text" placeholder="enter your name" name="uName"
+             ng-model="ctrl.user.userName" ng-minlength="3" required/>
+      <span class="valid" ng-show="myForm.uName.$error.minlength">請輸入至少3個字元</span>
+    <br/><br/>
+    password : 
+      <input type="password" placeholder="enter your password" name="uPassWord"
+             ng-model="ctrl.user.passWord" ng-minlength="3" ng-maxlength="6" required/>
+      <span class="valid" ng-show="myForm.uPassWord.$error.minlength">請輸入至少3個字元</span>
+      <span class="valid" ng-show="myForm.uPassWord.$error.maxlength">請輸入至多6個字元</span>
+    <br/><br/>
+    age :
+      <input type="number" placeholder="enter your age" ng-model="ctrl.user.age"/>
+    <br/><br/>
+    birthday :
+      <input type="date" ng-model="ctrl.user.birthday"/>
+    <br/><br/>
+    <button type="submit" ng-disabled="myForm.$invalid">Submit</button>
+  </form>
+
+  <script>
+    var kbApp = angular.module('kbApp',[]);
+    kbApp.controller('MainCtrl',[function(){
+      var self = this;
+      
+      self.submit = function(){
+        if(self.user){
+          var userInfo = '';
+          for(var prop in self.user){
+            userInfo += prop+' : '+self.user[prop]+'\n'
+          }
+          alert('User Info\n'+userInfo);
+        }
+      }
+    }]);
+  </script>
+</body>
+</html>
