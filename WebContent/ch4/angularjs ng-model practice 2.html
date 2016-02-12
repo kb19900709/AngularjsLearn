@@ -17,6 +17,7 @@
   	see >>> https://docs.angularjs.org/api/ng/type/form.FormController  	
    -->
   <form ng-submit="ctrl.submit()" name="myForm">
+  	<!-- 假設 ng-validator 驗證沒有過，將不會自動建立物件關聯 -->
     name : 
       <input type="text" placeholder="enter your name" name="uName"
              ng-model="ctrl.user.userName" ng-minlength="3" required/>

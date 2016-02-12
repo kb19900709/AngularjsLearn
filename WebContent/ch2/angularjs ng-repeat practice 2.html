@@ -27,6 +27,7 @@
       <!-- 
       	ng-class : 選擇性的套用css，可接受字串或是物件 
       	如果是物件，則會根據物件的 key:boolean 自動去選擇套入css
+      	see >>> https://docs.angularjs.org/api/ng/directive/ngClass
       -->
       <td ng-class="ctrl.getNoteClass(note.done)">
         <span ng-bind="note.assignee"></span>
