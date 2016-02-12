@@ -16,26 +16,53 @@
   	透過 formName.$helper or formName.field ...etc 取得對應的表單狀態
   	see >>> https://docs.angularjs.org/api/ng/type/form.FormController  	
    -->
+  User Info ...
+  <br/><br/>
   <form ng-submit="ctrl.submit()" name="myForm">
   	<!-- 假設 ng-validator 驗證沒有過，將不會自動建立物件關聯 -->
-    name : 
+    Name : 
       <input type="text" placeholder="enter your name" name="uName"
              ng-model="ctrl.user.userName" ng-minlength="3" required/>
       <span class="valid" ng-show="myForm.uName.$error.minlength">請輸入至少3個字元</span>
     <br/><br/>
-    password : 
+    Password : 
       <input type="password" placeholder="enter your password" name="uPassWord"
              ng-model="ctrl.user.passWord" ng-minlength="3" ng-maxlength="6" required/>
       <span class="valid" ng-show="myForm.uPassWord.$error.minlength">請輸入至少3個字元</span>
       <span class="valid" ng-show="myForm.uPassWord.$error.maxlength">請輸入至多6個字元</span>
     <br/><br/>
-    age :
+    Age :
       <!-- 綁定的物件將會是整數型態 -->
       <input type="number" placeholder="enter your age" ng-model="ctrl.user.age"/>
     <br/><br/>
-    birthday :
+    Birthday :
       <!-- 綁定的物件將會是 Date 型態 -->
       <input type="date" ng-model="ctrl.user.birthday"/>
+    <br/><br/><hr/>
+    
+    About Job ...
+    <br/><br/>
+    
+    <!-- 
+    	子表單 directive ng-form，see >>> https://docs.angularjs.org/api/ng/directive/ngForm 
+    	給予名稱之後，將建立與父表的關聯
+    	可以正常存取表單狀態(同父表)，父表也可以直接存取子表的表單狀態
+    	注意:子表表單狀態將影響父表表單狀態(如子表必填，影響到父表的 $invalid)
+    -->
+    <ng-form name="aboutJob">
+      <span class="valid" ng-show="aboutJob.uSkill.$invalid">*</span>
+      Skill : 
+      <input type="text" name="uSkill" ng-model="ctrl.user.job.skill" required>
+      <br/><br/>
+      <span class="valid" ng-show="aboutJob.uExperience.$invalid">*</span>
+      Experience : 
+      <textarea type="text" name="uExperience" style="resize:none;" 
+                ng-model="ctrl.user.job.experience" required></textarea>
+      <br/><br/>
+    </ng-form>
+    
+    <span class="valid" ng-show="myForm.aboutJob.$invalid">工作相關內容皆為必輸</span>
+    
     <br/><br/>
     <!-- 
     	如果表單狀態檢核有問題，則隱蔽功能 。
@@ -54,7 +81,16 @@
         if(self.user){
           var userInfo = '';
           for(var prop in self.user){
-            userInfo += prop+' : '+self.user[prop]+'\n'
+            if(prop == 'job'){
+              var jobinfo = '';
+              userInfo += prop+' >>> ';
+              for(var jobProp in self.user[prop]){
+                userInfo += jobProp+' : '+self.user[prop][jobProp]+'\t\t';
+              }
+              userInfo += '\n';
+              continue;
+            }
+            userInfo += prop+' : '+self.user[prop]+'\n';
           }
           alert('User Info\n'+userInfo);
         }

@@ -7,6 +7,7 @@
   <!-- 
   	有別於 ng-class 的另外一種做法
   	使用css，置換UI告知使用者驗證狀態 
+  	see >>> https://docs.angularjs.org/api/ng/directive/form
   	class = "userMessage"
   	1.如果沒有通過必填，顯示背景色:#FFE4C4
   	2.如果沒有通過最大長度限制，顯示背景色:#DAB1D5
@@ -58,7 +59,7 @@
         if(self.user){
           var userInfo = '';
           for(var prop in self.user){
-            userInfo += prop+' : '+self.user[prop]+'\n'
+            userInfo += prop+' : '+self.user[prop]+'\n';
           }
           alert('User Info\n'+userInfo);
         }
