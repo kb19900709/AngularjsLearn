@@ -20,15 +20,30 @@
         </td>
       </tr>
       <tr>
+        <td>Radio</td>
+        <td>
+          <!-- 若有動態給值的需求，使用 ng-value directive-->
+          <input type="radio" name="gender" ng-model="ctrl.options.gender" value="male">male
+          <input type="radio" name="gender" ng-model="ctrl.options.gender" value="female">female
+          <input type="radio" name="gender" ng-model="ctrl.options.gender" ng-value="ctrl.child">
+          <span ng-bind="ctrl.child"></span>
+        </td>
+      </tr>
+      <tr>
         <td>Checkbox</td>
         <td>
+          <!-- 
+          	checkbox default true/false
+          	若非預設型態使用 ng-true-value/ng-false-value directive 給值，如果沒有設定可能會綁定不到model
+          -->
           <input type="checkbox" ng-model="ctrl.options.checkboxs" name="checkboxs"
                  ng-true-value="1" ng-false-value="0">是否確認
         </td>
       </tr>
       <tr>
-        <td>Checkbox Default Value (one way)</td>
+        <td>Checkbox Binding (one way)</td>
         <td>
+          <!-- 單向綁定使用 ng-checked directive -->
           <div ng-repeat="sport in ctrl.sports">
             <input type="checkbox" ng-checked="sport.selected == 1" ng-disabled="true"/>
             <span ng-bind="sport.label"></span>
@@ -36,7 +51,7 @@
         </td>
       </tr>
       <tr>
-        <td>Checkbox Default Value (two way)</td>
+        <td>Checkbox Binding (two way)</td>
         <td>
           <div ng-repeat="sport in ctrl.sports">
             <input type="checkbox" ng-model="sport.selected" ng-true-value="1"
@@ -45,24 +60,25 @@
           </div>
         </td>
       </tr>
+      <!-- ng-options see >>> https://docs.angularjs.org/api/ng/directive/ngOptions -->
       <tr>
-        <td>Radio</td>
+        <td>Select Model Value Binding</td>
         <td>
-          <input type="radio" name="gender" ng-model="ctrl.options.gender" value="male">male
-          <input type="radio" name="gender" ng-model="ctrl.options.gender" value="female">female
-          <input type="radio" name="gender" ng-model="ctrl.options.gender" ng-value="ctrl.child">
-          <span ng-bind="ctrl.child"></span>
-        </td>
-      </tr>
-      <tr>
-        <td>Select</td>
-        <td>
+          <!-- value as label for item in array 表示式，此處綁定的是 model value -->
           <select ng-model="ctrl.options.country" 
             ng-options="country.id as country.label for country in ctrl.countries"></select>
         </td>
       </tr>
+      <tr>
+        <td>Select Object Binding</td>
+        <td>
+          <!-- label for item in array track by value ，此處綁定的是 object 且指定以id做為條件綁定 -->
+          <select ng-model="ctrl.options.countryObject"
+            ng-options="country.label for country in ctrl.countries track by country.id"></select>
+        </td>
+      </tr>
     </table>
-    <br/><br/>
+    <br/>
     <button type="submit">Submit</button>
   </form>
   
@@ -76,7 +92,8 @@
         textarea : '',
         checkboxs : 0,
         gender : 'male',
-        country : 3
+        country : 3,
+        countryObject : {label: 'USA' , id: 1}
       };
       
       self.child = 'child';
@@ -97,11 +114,8 @@
       
       self.submit = function(){
         if(self.options){
-          var optionsInfo = '';
-          for(var prop in self.options){
-            optionsInfo += prop+' : '+self.options[prop]+'\n';
-          }
-          alert('options Info \n'+optionsInfo);
+          var optionsInfo = getObjectMessage(self.options);
+          alert('optionsInfo\n'+optionsInfo);
         }
         
         var sprotsInfo = '';
@@ -111,7 +125,24 @@
           sprotsInfo += sport.label + ' : '+sport.selected+'\n';
         }
         
-        alert('Sprots Info \n'+sprotsInfo); 
+        alert('Sprots Info\n'+sprotsInfo); 
+      }
+      
+      function getObjectMessage(obj){
+        var objectInfo = '';
+        if(obj){
+          for(var prop in obj){
+            if(angular.isObject(obj[prop])){
+              objectInfo += '*** obj ***\n';
+              objectInfo += prop+'\n'+getObjectMessage(obj[prop])+'\n';
+              objectInfo += '*** *** ***\n'
+            }else{
+              objectInfo += prop+' : '+obj[prop]+'\n';
+            }
+          }
+          return objectInfo;
+        }
+        return null;
       }
     }]);
   </script>
