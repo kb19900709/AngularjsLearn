@@ -54,6 +54,13 @@
           <span ng-bind="ctrl.child"></span>
         </td>
       </tr>
+      <tr>
+        <td>Select</td>
+        <td>
+          <select ng-model="ctrl.options.country" 
+            ng-options="country.id as country.label for country in ctrl.countries"></select>
+        </td>
+      </tr>
     </table>
     <br/><br/>
     <button type="submit">Submit</button>
@@ -65,13 +72,21 @@
       
       var self = this;
       
-      self.child = 'child';
-      
       self.options = {
         textarea : '',
         checkboxs : 0,
-        gender : 'male'
+        gender : 'male',
+        country : 3
       };
+      
+      self.child = 'child';
+      
+      self.countries = [
+        {label: 'USA', id: 1},
+        {label: 'India', id: 2},
+        {label: 'Taiwan', id: 3},
+        {label: 'Other', id: 4}
+      ];
 
       self.sports = [
          {label: 'Basketball', selected: 1},
