@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <meta charset="utf-8">
+  <title>CH5</title>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+  <div>
+    <button ng-click="ctrl.changeTab('first')">first tab</button>
+    <button ng-click="ctrl.changeTab('second')">second tab</button>
+  </div>
+  <hr/>
+  
+  <div ng-switch on="ctrl.tab"> 
+    
+    <div ng-switch-when="first" ng-controller="SubCtrl as sub">
+      <H3>First</H3>
+      <ul>
+        <li ng-repeat="item in sub.list">
+          <span ng-bind="item.label"></span>
+        </li>
+      </ul>
+      <button ng-click="sub.addItems()">add items</button>
+    </div>
+    <div ng-switch-when="second" ng-controller="SubCtrl as sub">
+      <H3>Second</H3>
+      <ul>
+        <li ng-repeat="item in sub.list">
+          <span ng-bind="item.label"></span>
+        </li>
+      </ul>
+      <button ng-click="sub.addItems()">add items</button>
+    </div>
+  </div>
+  
+  <script>
+    var kbApp = angular.module('kbApp',[]);
+    
+    kbApp.controller('MainCtrl',[function(){
+      var self = this;
+      self.tab = 'first';
+      
+      self.changeTab = function(tab){
+        self.tab = tab;
+      }
+    }]);
+    
+    kbApp.controller('SubCtrl',[function(){
+      var self = this;
+      
+      self.list = [
+        { id:1 , label:'item 1'},
+        { id:2 , label:'item 2'}
+      ];
+      
+      self.addItems = function(){
+        var count = self.list.length+1;
+        self.list.push(
+          { id:count , label:'item '+count}
+        );
+      }
+    }]);
+  </script>
+</body>
+</html>
