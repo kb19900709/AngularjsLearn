@@ -1,0 +1,104 @@
+<!DOCTYPE html> 
+<html ng-app="kbApp">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <meta charset="utf-8">
+  <title>CH4</title>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+  
+  <form ng-submit="ctrl.submit()">
+    <table width="80%" cellspacing="1" border="1" cellpadding="1">
+      <tr>
+        <td>屬性簡述</td>
+        <td>UI</td>
+      </tr>
+      <tr>
+        <td>Textarea</td>
+        <td>
+          <textarea style="resize:none;" ng-model="ctrl.options.textarea"></textarea>
+        </td>
+      </tr>
+      <tr>
+        <td>Checkbox</td>
+        <td>
+          <input type="checkbox" ng-model="ctrl.options.checkboxs" name="checkboxs"
+                 ng-true-value="1" ng-false-value="0">是否確認
+        </td>
+      </tr>
+      <tr>
+        <td>Checkbox Default Value (one way)</td>
+        <td>
+          <div ng-repeat="sport in ctrl.sports">
+            <input type="checkbox" ng-checked="sport.selected == 1" ng-disabled="true"/>
+            <span ng-bind="sport.label"></span>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Checkbox Default Value (two way)</td>
+        <td>
+          <div ng-repeat="sport in ctrl.sports">
+            <input type="checkbox" ng-model="sport.selected" ng-true-value="1"
+                   ng-false-value="0"/>
+            <span ng-bind="sport.label"></span>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Radio</td>
+        <td>
+          <input type="radio" name="gender" ng-model="ctrl.options.gender" value="male">male
+          <input type="radio" name="gender" ng-model="ctrl.options.gender" value="female">female
+          <input type="radio" name="gender" ng-model="ctrl.options.gender" ng-value="ctrl.child">
+          <span ng-bind="ctrl.child"></span>
+        </td>
+      </tr>
+    </table>
+    <br/><br/>
+    <button type="submit">Submit</button>
+  </form>
+  
+  <script>
+    var kbApp = angular.module('kbApp',[]);
+    kbApp.controller('MainCtrl',[function(){
+      
+      var self = this;
+      
+      self.child = 'child';
+      
+      self.options = {
+        textarea : '',
+        checkboxs : 0,
+        gender : 'male'
+      };
+
+      self.sports = [
+         {label: 'Basketball', selected: 1},
+         {label: 'Cricket', selected: 0},
+         {label: 'Soccer', selected: 0},
+         {label: 'Swimming', selected: 1}
+      ];
+      
+      self.submit = function(){
+        if(self.options){
+          var optionsInfo = '';
+          for(var prop in self.options){
+            optionsInfo += prop+' : '+self.options[prop]+'\n';
+          }
+          alert('options Info \n'+optionsInfo);
+        }
+        
+        var sprotsInfo = '';
+        var sport = {};
+        for(var i=0;i<self.sports.length;i++){
+          sport = self.sports[i];
+          sprotsInfo += sport.label + ' : '+sport.selected+'\n';
+        }
+        
+        alert('Sprots Info \n'+sprotsInfo); 
+      }
+    }]);
+  </script>
+</body>
+</html>
