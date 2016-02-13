@@ -6,14 +6,21 @@
   <title>CH5</title>
 </head>
 <body ng-controller="MainCtrl as ctrl">
+  
   <div>
     <button ng-click="ctrl.changeTab('first')">first tab</button>
     <button ng-click="ctrl.changeTab('second')">second tab</button>
   </div>
+  
   <hr/>
   
+  <!-- 
+  	ng-switch see >>> https://docs.angularjs.org/api/ng/directive/ngSwitch 
+  	每次切頁，新頁的SubCtrl將建立、舊頁的SubCtrl將銷毀 (每個controller都是獨立運作的)
+  -->
   <div ng-switch on="ctrl.tab"> 
     
+    <!-- 注意: ng-switch-when="matchValue" will match against the string -->
     <div ng-switch-when="first" ng-controller="SubCtrl as sub">
       <H3>First</H3>
       <ul>
@@ -23,6 +30,7 @@
       </ul>
       <button ng-click="sub.addItems()">add items</button>
     </div>
+    
     <div ng-switch-when="second" ng-controller="SubCtrl as sub">
       <H3>Second</H3>
       <ul>
@@ -32,6 +40,7 @@
       </ul>
       <button ng-click="sub.addItems()">add items</button>
     </div>
+    
   </div>
   
   <script>

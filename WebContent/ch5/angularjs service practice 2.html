@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <meta charset="utf-8">
+  <title>CH5</title>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+  
+  <input type="text" ng-model="ctrl.message">
+  <br/><br/>
+  <button type="button" ng-click="ctrl.logMessage()">log message</button>
+  
+  <script type="text/javascript">
+    var kbApp = angular.module('kbApp',[]);
+    kbApp.controller('MainCtrl',['$log',function($log){
+      var self = this;
+      self.logMessage = function(){
+        $log.log(self.message);
+      }
+    }]);
+  </script>
+</body>
+</html>
