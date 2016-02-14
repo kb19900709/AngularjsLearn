@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <meta charset="utf-8">
+  <title>CH5</title>
+</head>
+<!-- 
+	與上一個範例 angularjs service practice 1.html 不同的是 
+	變動過的資料將持續保存在切頁後的view上
+ -->
+<body ng-controller="MainCtrl as ctrl">
+  
+  <div>
+    <button ng-click="ctrl.changeTab('first')">first tab</button>
+    <button ng-click="ctrl.changeTab('second')">second tab</button>
+  </div>
+  
+  <hr/>
+  
+  <div ng-switch on="ctrl.tab">
+    <div ng-switch-when="first" ng-controller="SubCtrl as sub">      
+      <H3>First</H3>
+      <ul>
+        <li ng-repeat="item in sub.list()">
+          <span ng-bind="item.label"></span>
+        </li>
+      </ul>
+      <button ng-click="sub.addItems()">add items</button>
+    </div>
+    <div ng-switch-when="second" ng-controller="SubCtrl as sub">
+      <H3>Second</H3>
+      <ul>
+        <li ng-repeat="item in sub.list()">
+          <span ng-bind="item.label"></span>
+        </li>
+      </ul>
+      <button ng-click="sub.addItems()">add items</button>
+    </div>
+  </div>
+  
+  <script>
+    var kbApp = angular.module('kbApp',[]);
+    
+    kbApp.controller('MainCtrl',[function(){
+      var self = this;
+      
+      self.tab = 'first';
+      
+      self.changeTab = function(tab){
+        self.tab = tab;
+      }
+    }]);
+    
+    //注入ItemService，實體名稱為itemSrv
+    kbApp.controller('SubCtrl',['ItemService',function(itemSrv){
+      var self = this;
+      
+      self.list = function(){
+        return itemSrv.list();
+      }
+      
+      self.addItems = function(){
+        var count = self.list().length+1;
+        itemSrv.add(
+          {id:count,label:'item '+count}
+        );
+      }
+    }]);
+    
+    /*
+    	factory與service 等價，只是寫法不一樣
+    	factory是直接回傳函式與物件，service是由Angularjs建立型別(new)
+    	
+    	注意:
+    	controller實體會因為頁面需求建立或是銷毀
+    	service在首次注入後就會一直存在(只建立一次實體)
+    */
+    kbApp.factory('ItemService',['$log',function($log){
+      
+      $log.log('init ItemService');
+      
+      var items = [
+        {id:1 , label:'item 1'},
+        {id:2 , label:'item 2'}
+      ];
+      
+      return {
+        list : function(){
+          return items;
+        },
+        
+        add : function(item){
+          items.push(item);
+        }
+      }
+    }]);
+   
+    /*
+    kbApp.service('ItemService',['$log',function($log){
+      
+      $log.log('init ItemService');
+      
+      var items = [
+        {id:1 , label:'item 1'},
+        {id:2 , label:'item 2'}
+      ];
+      
+      this.list = function(){
+        return items;
+      }
+      
+      this.add = function(item){
+        items.push(item);
+      }
+    }]);
+    */
+  </script>
+</body>
+</html>
