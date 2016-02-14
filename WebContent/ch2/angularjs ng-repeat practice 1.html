@@ -18,7 +18,7 @@
       <td>Label</td>
       <td>Done</td>
     </tr>
-    <!-- template (for each) -->
+    <!-- template (for each) see >>> https://docs.angularjs.org/api/ng/directive/ngRepeat -->
     <tr ng-repeat="note in ctrl.notes">
       <td ng-click="ctrl.clickLabel(note)" ng-bind="note.label"></td>
       <td ng-bind="note.done"></td>

@@ -46,12 +46,16 @@
   <script>
     var kbApp = angular.module('kbApp',[]);
     
-    kbApp.controller('MainCtrl',[function(){
+    //相依式注入 see >>> https://docs.angularjs.org/guide/di
+    //陣列裡的引數(除了function)依順序排列至最後一個function引數內可達到DI的效果
+    kbApp.controller('MainCtrl',['$log','$location',function($log,$location){
       var self = this;
       self.tab = 'first';
       
       self.changeTab = function(tab){
         self.tab = tab;
+        $log.log('change to : '+tab);
+        $log.log($location.absUrl());
       }
     }]);
     
