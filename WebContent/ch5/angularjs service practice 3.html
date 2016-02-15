@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <meta charset="utf-8">
+  <title>CH5</title>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+  
+  <div>
+    <button ng-click="ctrl.changeTab('first')">first tab</button>
+    <button ng-click="ctrl.changeTab('second')">second tab</button>
+  </div>
+  
+  <hr/>
+  
+  <div ng-switch on="ctrl.tab">
+    <div ng-switch-when="first" ng-controller="SubCtrl as sub">      
+      <H3>First</H3>
+      <ul>
+        <li ng-repeat="item in sub.list()">
+          <span ng-bind="item.label"></span>
+        </li>
+      </ul>
+      <button ng-click="sub.addItems()">add items</button>
+    </div>
+    <div ng-switch-when="second" ng-controller="SubCtrl as sub">
+      <H3>Second</H3>
+      <ul>
+        <li ng-repeat="item in sub.list()">
+          <span ng-bind="item.label"></span>
+        </li>
+      </ul>
+      <button ng-click="sub.addItems()">add items</button>
+    </div>
+  </div>
+  
+  <script>
+    var kbApp = angular.module('kbApp',[]);
+    
+    kbApp.controller('MainCtrl',[function(){
+      var self = this;
+      
+      self.tab = 'first';
+      
+      self.changeTab = function(tab){
+        self.tab = tab;
+      }
+    }]);
+    
+    kbApp.controller('SubCtrl',['ItemService',function(itemSrv){
+      var self = this;
+      
+      self.list = function(){
+        return itemSrv.list();
+      }
+      
+      self.addItems = function(){
+        var count = self.list().length+1;
+        itemSrv.add(
+          {id:count,label:'item '+count}
+        );
+      }
+    }]);
+    
+    kbApp.provider('ItemService',function(){
+      //service class
+      function ItemService(items_default){
+        var items = items_default || [];
+
+        this.list = function(){
+          return items;
+        }
+
+        this.add = function(item){ 
+          items.push(item);
+        }
+      }
+      
+      var haveDefault = true;
+      
+      this.dieableDefaultItems = function(){
+        haveDefault = false;
+      }
+      
+      this.$get = [function(){
+        var items_default = [];
+        if(haveDefault){
+          items_default = [
+            {id:1 , label:'item 1'},
+            {id:2 , label:'item 2'}
+          ];
+        }
+        return new ItemService(items_default);
+      }];
+    });
+    
+    kbApp.config(['ItemServiceProvider',function(itemProvider){
+      var shouldHaveDefaultItems = true;
+      if(!shouldHaveDefaultItems){
+        itemProvider.dieableDefaultItems();
+      }
+    }]);
+  </script>
+</body>
+</html>
