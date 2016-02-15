@@ -63,9 +63,16 @@
       }
     }]);
     
+    //provider see >>> https://docs.angularjs.org/guide/providers
+    //provider不會相依任何service，實體化service並注入其它相依service於$get函式完成
     kbApp.provider('ItemService',function(){
-      //service class
-      function ItemService(items_default){
+    	
+      var haveDefault = true;
+    	
+      //service
+      function ItemService(items_default,$log){
+        $log.log('init ItemService');
+        
         var items = items_default || [];
 
         this.list = function(){
@@ -77,13 +84,12 @@
         }
       }
       
-      var haveDefault = true;
-      
       this.dieableDefaultItems = function(){
         haveDefault = false;
       }
       
-      this.$get = [function(){
+      //注入相依service $log
+      this.$get = ['$log',function($log){
         var items_default = [];
         if(haveDefault){
           items_default = [
@@ -91,10 +97,17 @@
             {id:2 , label:'item 2'}
           ];
         }
-        return new ItemService(items_default);
+        
+        //items_default以及$log被當作建構引數後回傳ItemService實體
+        return new ItemService(items_default,$log);
       }];
     });
     
+    //Service provider names start with the name of the service they provide followed by Provider. 
+    //For example, the $log service has a provider called $logProvider.
+    //此函式只能注入providers或是constants，此函式會在建立service前先被執行
+    //所以可以透過provider動態更改組態設定，根據需求建構不一樣的service
+    //config see >>> https://docs.angularjs.org/guide/module
     kbApp.config(['ItemServiceProvider',function(itemProvider){
       var shouldHaveDefaultItems = true;
       if(!shouldHaveDefaultItems){
