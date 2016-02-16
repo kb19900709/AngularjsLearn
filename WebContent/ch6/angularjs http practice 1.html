@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <meta charset="utf-8">
+  <title>CH6</title>
+  <style>
+  	.theader{
+  		background-color:#84C1FF;
+  	}
+  	
+  	.noteClass.ng-invalid{
+  		background-color:#FFD2D2;
+  	}
+  	
+  	.noteClass.ng-valid{
+  		background-color:#CEFFCE;
+  	}
+  </style>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+
+  <span>清單資料</span>
+  <table width="30%" cellspacing="1" border="1" cellpadding="1">
+  	<tr class="theader">
+  		<td>Author</td>
+  		<td>Label</td>
+  		<td>Edit</td>
+  	</tr>
+  	<tr ng-repeat="item in ctrl.items">
+  		<td ng-bind="item.author"></td>
+  		<td ng-bind="item.label"></td>
+  		<td><a href="#" ng-click="ctrl.editItem(item)">Edit</a></td>
+  	</tr>
+  </table>
+  <br/>
+  <br/>
+    新增/編輯資料
+  <form ng-submit="ctrl.submitItem()" name="myForm">
+	  <table width="30%" cellspacing="1" border="1" cellpadding="1">
+	  	<tr>
+	  		<td>Author</td>
+	  		<td>Label</td>
+	  	</tr>
+	  	<tr>
+	  		<td>
+	  			<input type="text" ng-model="ctrl.item.author" class="noteClass" ng-minlength="3" required/>
+	  		</td>
+	  		<td>
+	  			<input type="text" ng-model="ctrl.item.label" class="noteClass" ng-minlength="3" required/>
+	  		</td>
+	  	</tr>
+	  </table>
+	  <br/>
+	  <button type="submit" ng-disabled="myForm.$invalid">Submit</button>
+	  <span>備註:兩個欄位皆須輸入且至少三碼</span>
+  </form>
+  
+  <script>
+    var kbApp = angular.module('kbApp',[]);
+    kbApp.controller('MainCtrl',['ItemService','$log',function(itemSrv,$log){
+      var self = this;
+      self.items = [];
+	  self.item = {};
+	  
+	  getItems();
+	  
+	  self.editItem = function(item){
+		  self.item = angular.copy(item);
+	  }
+	  
+	  self.submitItem = function(){
+		  if(self.item.id){
+			  itemSrv.editItem(self.item.id,self.item).then(function(response){
+				  //$log.log(response);
+				  refresh();
+			  },function(error){
+				  $log.log('call ItemService.add fail');
+			  });
+		  }else{
+			  itemSrv.addItem(self.item).then(function(response){
+				  //$log.log(response);
+				  refresh();
+			  },function(error){
+				  $log.log('call ItemService.add fail');
+			  });
+		  }
+	  }
+	  
+	  function refresh(){
+		  getItems();
+		  self.item = {};
+	  }
+      
+      function getItems(){
+	  	  itemSrv.queryAll().then(function(response){
+	  		//$log.log(response);
+	  		self.items = response.data;
+ 	      },function(error){
+ 	        $log.log('call ItemService.queryAll fail');
+ 	      });
+      }
+      
+    }]);
+	
+	kbApp.factory('ItemService',['$http',function($http){
+      return {
+        queryAll : function(){
+          return $http.get('/api/note');
+        },
+        
+        addItem : function(item){
+          return $http.post('/api/note',item);
+        },
+        
+        editItem : function(id,item){
+          return $http.put('/api/note/'+id,item);
+        }
+      }
+    }]);
+  </script>
+</body>
+</html>
