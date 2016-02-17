@@ -2,6 +2,7 @@
 <html ng-app="kbApp">
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+<script src="https://rawgit.com/angular/bower-angular-resource/master/angular-resource.min.js"></script>
   <meta charset="utf-8">
   <title>CH6</title>
   <style>
@@ -11,10 +12,12 @@
   	
   	.noteClass.ng-invalid{
   		background-color:#FFD2D2;
+  		width: 99%;
   	}
   	
   	.noteClass.ng-valid{
   		background-color:#CEFFCE;
+  		width: 99%;
   	}
   </style>
 </head>
@@ -28,13 +31,15 @@
   		<td>Edit</td>
   		<td>Delete</td>
   	</tr>
-  	<tr ng-repeat="item in ctrl.items">
+  	<tr ng-repeat="item in ctrl.items track by item.id">
   		<td ng-bind="item.author"></td>
   		<td ng-bind="item.label"></td>
   		<td><a href="#" ng-click="ctrl.editItem(item)">Edit</a></td>
   		<td><a href="#" ng-click="ctrl.deleteItem(item)">Delete</a></td>
   	</tr>
   </table>
+  <br/>
+  <button type="button" width="100%" ng-click="ctrl.getItems()">get all items</button>
   <br/>
   <br/>
   <H3>新增/編輯資料</H3>
@@ -61,28 +66,68 @@
   <br/>
   <H3>指定ID取得資料</H3>
   ID : <input type="text" ng-model="ctrl.id"/>&emsp;<button ng-click="ctrl.getItem()">get item</button>
+  <br/>
+  <br/>
+  <div>
+  	<H3>指定條件取得資料(完全比對)</H3>
+  	Author : <input type="text" ng-model="ctrl.queryParams.author"/>
+  	&emsp;
+  	Label : <input type="text" ng-model="ctrl.queryParams.label"/>
+  	&emsp;
+  	<button ng-click="ctrl.getItemByParams()">get item</button>
+  </div>
   
   <script>
-    var kbApp = angular.module('kbApp',[]);
-    kbApp.controller('MainCtrl',['ItemService','$log',function(itemSrv,$log){
+    var kbApp = angular.module('kbApp',['ngResource']);
+    kbApp.controller('MainCtrl',['ItemService','ResourceService','$log',function(itemSrv,resourceSrv,$log){
       var self = this;
+      self.resourceFlag = false;
       self.items = [];
 	  self.item = {};
 	  self.id = null;
+	  self.queryParams = {
+			  label : '',
+			  author : ''
+	  }
 	  
-	  getItems();
+	  self.getItemByParams = function(){
+		  if(self.resourceFlag){
+			  itemSrv.queryByParam(self.queryParams).then(function(response){
+				  self.items = response.data;
+			  },function(error){
+				  $log.log('call ItemService.queryByParam fail');
+			  });
+		  }else{
+			  resourceSrv.queryByParam(self.queryParams,function(dataList){
+				  self.items = dataList;
+			  },function(error){
+				  $log.log('call ResourceService.queryByParam fail');
+			  }) 
+		  }
+	  }
 	  
 	  self.getItem = function(){
 		  if(self.id){
-			  itemSrv.queryItemByID(self.id).then(function(response){
-				  alert(JSON.stringify(response.data));
-			  },function(error){
-				  $log.log('call ItemService.queryItemByID fail');
-				  alert(error.data.msg);
-			  });
+			  if(self.resourceFlag){
+				  itemSrv.queryItemByID(self.id).then(function(response){
+					  self.items = [];
+					  self.items.push(response.data)
+				  },function(error){
+					  $log.log('call ItemService.queryItemByID fail');
+					  alert(error.data.msg);
+				  });
+			  }else{
+				  resourceSrv.get({id:self.id},function(data){
+					  self.items = [];
+					  self.items.push(data)
+				  },function(error){
+					  $log.log('call ResourceService.get fail');
+					  alert(error.data.msg);
+				  });
+			  }			  
 		  }else{
 			  alert('please input id');
-		  }
+		  }   
 	  }
 	  
 	  self.editItem = function(item){
@@ -91,42 +136,81 @@
 	  
 	  self.submitItem = function(){
 		  if(self.item.id){
-			  itemSrv.editItem(self.item.id,self.item).then(function(response){
-				  refresh(response);
-			  },function(error){
-				  $log.log('call ItemService.editItem fail');
-			  });
+			  if(self.resourceFlag){
+				  itemSrv.editItem(self.item.id,self.item).then(function(response){
+					  refresh(response);
+				  },function(error){
+					  $log.log('call ItemService.editItem fail');
+				  });
+			  }else{
+				  resourceSrv.editItem(self.item.id,self.item,function(response){
+					  refresh(response);
+				  },function(error){
+					  $log.log('call ResourceService.editItem fail');
+				  })
+			  }			  
 		  }else{
-			  itemSrv.addItem(self.item).then(function(response){
-				  refresh(response);
-			  },function(error){
-				  $log.log('call ItemService.addItem fail');
-			  });
-		  }
+			  if(self.resourceFlag){
+				  itemSrv.addItem(self.item).then(function(response){
+					  refresh(response);
+				  },function(error){
+					  $log.log('call ItemService.addItem fail');
+				  });
+			  }else{
+				  resourceSrv.save(self.item,function(response){
+					  refresh(response);
+				  },function(error){
+					  $log.log('call ResourceService.save fail');
+				  });
+			  }			  
+		  }  
 	  }
 	  
 	  self.deleteItem = function(item){
-		  itemSrv.deleteItem(item.id).then(function(response){
-			  refresh(response);
-		  },function(error){
-			  $log.log('call ItemService.deleteItem fail');
-		  });
+		  if(self.resourceFlag){
+			  itemSrv.deleteItem(item.id).then(function(response){
+				  refresh(response);
+			  },function(error){
+				  $log.log('call ItemService.deleteItem fail');
+			  });
+		  }else{
+			  resourceSrv.delete({id:item.id},function(response){
+				  refresh(response);
+			  },function(error){
+				  $log.log('call ResourceService.delete fail');
+			  });
+		  }		  
 	  }
-	  
-	  function refresh(response){
+      
+      self.getItems = function(){
+    	  if(self.resourceFlag){
+    		  itemSrv.queryAll().then(function(response){
+    		  	self.items = response.data;
+   	 	      },function(error){
+   	 	        $log.log('call ItemService.queryAll fail');
+   	 	      });
+    	  }else{
+    		  resourceSrv.query(function(dataList){
+    		 	//$log.log(dataList);
+    			self.items = dataList;
+    		  },function(error){
+				$log.log('call ResourceService.query fail');
+			  });
+    	  }	  	  
+      }
+      
+      function refresh(response){
 		  $log.log('response='+JSON.stringify(response));
-		  alert(response.data.msg);
-		  getItems();
+		  if(self.resourceFlag){
+			  alert(response.data.msg);
+		  }else{
+			  alert(response.msg);
+		  }		  
+		  self.getItems();
 		  self.item = {};
 	  }
       
-      function getItems(){
-	  	  itemSrv.queryAll().then(function(response){
-	  		self.items = response.data;
- 	      },function(error){
- 	        $log.log('call ItemService.queryAll fail');
- 	      });
-      }
+      self.getItems();
       
     }]);
 	
@@ -134,6 +218,10 @@
       return {
         queryAll : function(){
           return $http.get('/api/note');
+        },
+        
+        queryByParam : function(item){
+          return $http.post('/api/note/queryByParam',item)
         },
         
         queryItemByID : function(id){
@@ -153,6 +241,21 @@
         }
       }
     }]);
+	
+	kbApp.factory('ResourceService',['$resource',function($resource){
+		return $resource('/api/note/:id',{ id:'@id'},{
+			editItem : {
+				method : 'PUT'
+			},
+			
+			queryByParam : {
+				url : '/api/note/queryByParam',
+				method : 'POST',
+				isArray : true,
+				params : null
+			}
+		});
+	}]);
   </script>
 </body>
 </html>
