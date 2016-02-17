@@ -20,25 +20,27 @@
 </head>
 <body ng-controller="MainCtrl as ctrl">
 
-  <span>清單資料</span>
+  <H3>清單資料</H3>
   <table width="30%" cellspacing="1" border="1" cellpadding="1">
   	<tr class="theader">
   		<td>Author</td>
   		<td>Label</td>
   		<td>Edit</td>
+  		<td>Delete</td>
   	</tr>
   	<tr ng-repeat="item in ctrl.items">
   		<td ng-bind="item.author"></td>
   		<td ng-bind="item.label"></td>
   		<td><a href="#" ng-click="ctrl.editItem(item)">Edit</a></td>
+  		<td><a href="#" ng-click="ctrl.deleteItem(item)">Delete</a></td>
   	</tr>
   </table>
   <br/>
   <br/>
-    新增/編輯資料
+  <H3>新增/編輯資料</H3>
   <form ng-submit="ctrl.submitItem()" name="myForm">
 	  <table width="30%" cellspacing="1" border="1" cellpadding="1">
-	  	<tr>
+	  	<tr class="theader">
 	  		<td>Author</td>
 	  		<td>Label</td>
 	  	</tr>
@@ -55,6 +57,10 @@
 	  <button type="submit" ng-disabled="myForm.$invalid">Submit</button>
 	  <span>備註:兩個欄位皆須輸入且至少三碼</span>
   </form>
+  <br/>
+  <br/>
+  <H3>指定ID取得資料</H3>
+  ID : <input type="text" ng-model="ctrl.id"/>&emsp;<button ng-click="ctrl.getItem()">get item</button>
   
   <script>
     var kbApp = angular.module('kbApp',[]);
@@ -62,8 +68,22 @@
       var self = this;
       self.items = [];
 	  self.item = {};
+	  self.id = null;
 	  
 	  getItems();
+	  
+	  self.getItem = function(){
+		  if(self.id){
+			  itemSrv.queryItemByID(self.id).then(function(response){
+				  alert(JSON.stringify(response.data));
+			  },function(error){
+				  $log.log('call ItemService.queryItemByID fail');
+				  alert(error.data.msg);
+			  });
+		  }else{
+			  alert('please input id');
+		  }
+	  }
 	  
 	  self.editItem = function(item){
 		  self.item = angular.copy(item);
@@ -72,29 +92,36 @@
 	  self.submitItem = function(){
 		  if(self.item.id){
 			  itemSrv.editItem(self.item.id,self.item).then(function(response){
-				  //$log.log(response);
-				  refresh();
+				  refresh(response);
 			  },function(error){
-				  $log.log('call ItemService.add fail');
+				  $log.log('call ItemService.editItem fail');
 			  });
 		  }else{
 			  itemSrv.addItem(self.item).then(function(response){
-				  //$log.log(response);
-				  refresh();
+				  refresh(response);
 			  },function(error){
-				  $log.log('call ItemService.add fail');
+				  $log.log('call ItemService.addItem fail');
 			  });
 		  }
 	  }
 	  
-	  function refresh(){
+	  self.deleteItem = function(item){
+		  itemSrv.deleteItem(item.id).then(function(response){
+			  refresh(response);
+		  },function(error){
+			  $log.log('call ItemService.deleteItem fail');
+		  });
+	  }
+	  
+	  function refresh(response){
+		  $log.log('response='+JSON.stringify(response));
+		  alert(response.data.msg);
 		  getItems();
 		  self.item = {};
 	  }
       
       function getItems(){
 	  	  itemSrv.queryAll().then(function(response){
-	  		//$log.log(response);
 	  		self.items = response.data;
  	      },function(error){
  	        $log.log('call ItemService.queryAll fail');
@@ -109,12 +136,20 @@
           return $http.get('/api/note');
         },
         
+        queryItemByID : function(id){
+          return $http.get('/api/note/'+id); 	
+        },
+        
         addItem : function(item){
           return $http.post('/api/note',item);
         },
         
         editItem : function(id,item){
           return $http.put('/api/note/'+id,item);
+        },
+        
+        deleteItem : function(id){
+          return $http.delete('/api/note/'+id);
         }
       }
     }]);
