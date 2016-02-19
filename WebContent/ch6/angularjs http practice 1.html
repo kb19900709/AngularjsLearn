@@ -2,6 +2,7 @@
 <html ng-app="kbApp">
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+<!-- CDN:載入ngResource模組-->
 <script src="https://rawgit.com/angular/bower-angular-resource/master/angular-resource.min.js"></script>
   <meta charset="utf-8">
   <title>CH6</title>
@@ -78,18 +79,26 @@
   </div>
   
   <script>
+    //引入ngResource模組 
+    //You can think of a module as a container for the different parts of your app – controllers, services, filters, directives, etc.
     var kbApp = angular.module('kbApp',['ngResource']);
     kbApp.controller('MainCtrl',['ItemService','ResourceService','$log',function(itemSrv,resourceSrv,$log){
       var self = this;
+      //true:使用$http建構service(ItemService) ,false:使用$resource建構service(ResourceService)
       self.resourceFlag = false;
+      //for 物件清單
       self.items = [];
+      //for 編輯物件
 	  self.item = {};
+      //for ID查詢
 	  self.id = null;
+      //for 條件查詢
 	  self.queryParams = {
 			  label : '',
 			  author : ''
 	  }
 	  
+      //條件查詢物件
 	  self.getItemByParams = function(){
 		  if(self.resourceFlag){
 			  itemSrv.queryByParam(self.queryParams).then(function(response){
@@ -106,6 +115,7 @@
 		  }
 	  }
 	  
+      //ID查詢物件
 	  self.getItem = function(){
 		  if(self.id){
 			  if(self.resourceFlag){
@@ -130,10 +140,12 @@
 		  }   
 	  }
 	  
+      //編輯前置function
 	  self.editItem = function(item){
 		  self.item = angular.copy(item);
 	  }
 	  
+      //表單送出時依據是否有ID決定呼叫新增或是編輯功能
 	  self.submitItem = function(){
 		  if(self.item.id){
 			  if(self.resourceFlag){
@@ -166,6 +178,7 @@
 		  }  
 	  }
 	  
+      //刪除物件
 	  self.deleteItem = function(item){
 		  if(self.resourceFlag){
 			  itemSrv.deleteItem(item.id).then(function(response){
@@ -182,6 +195,7 @@
 		  }		  
 	  }
       
+      //查詢所有物件
       self.getItems = function(){
     	  if(self.resourceFlag){
     		  itemSrv.queryAll().then(function(response){
@@ -199,6 +213,7 @@
     	  }	  	  
       }
       
+      //response回來的時候重置畫面，包括重新搜尋物件清單以及清空編輯物件欄位
       function refresh(response){
 		  $log.log('response='+JSON.stringify(response));
 		  if(self.resourceFlag){
@@ -210,10 +225,12 @@
 		  self.item = {};
 	  }
       
+      //ctrl初始化的時候先執行這個function
       self.getItems();
       
     }]);
 	
+    //$http see >>> https://docs.angularjs.org/api/ng/service/$http
 	kbApp.factory('ItemService',['$http',function($http){
       return {
         queryAll : function(){
@@ -242,6 +259,36 @@
       }
     }]);
 	
+    /*
+    	如果server端有提供RESTful APIs，建議使用$resource快速開發
+		此範例編寫 ItemService 等價於 ResourceService
+		程式架構上$resource更簡潔
+		
+    	$resource see >>> https://docs.angularjs.org/api/ngResource/service/$resource
+		使用$resource建構後會自動引入以下方法到回傳的物件上
+		
+    	{ 'get':    {method:'GET'},
+		  'save':   {method:'POST'},
+		  'query':  {method:'GET', isArray:true},
+		  'remove': {method:'DELETE'},
+		  'delete': {method:'DELETE'} };
+		注意:預設並沒有提供 method:'PUT'，必須額外定義於$resource第三個引數
+		
+		
+		$resource 建構引數簡述:	
+			
+			第一個引數:RESTful url template
+			第二個引數:
+				Given a template /path/:verb and parameter {verb:'greet', salutation:'Hello'} 
+				results in URL /path/greet?salutation=Hello.
+				If the defaultParam object is {someParam: '@someProp'} 
+				then the value of someParam will be data.someProp.
+				給第三個引數使用的 common url template 轉換
+				如果有定義 {key:'@xx'}，則引入的 data 的部分會是 data.xx for url template 轉換
+			注意:以上兩個引數皆可於第三個引數覆寫
+			
+			第三個引數:新增的方法物件			
+    */
 	kbApp.factory('ResourceService',['$resource',function($resource){
 		return $resource('/api/note/:id',{ id:'@id'},{
 			editItem : {
@@ -251,8 +298,8 @@
 			queryByParam : {
 				url : '/api/note/queryByParam',
 				method : 'POST',
-				isArray : true,
-				params : null
+				params : null,
+				isArray : true
 			}
 		});
 	}]);
