@@ -1,3 +1,4 @@
+Use browser : Google Chrome
 All project reference : https://github.com/shyamseshadri/angularjs-up-and-running
 
 =============================================================================

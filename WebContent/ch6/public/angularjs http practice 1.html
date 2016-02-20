@@ -215,7 +215,7 @@
       
       //response回來的時候重置畫面，包括重新搜尋物件清單以及清空編輯物件欄位
       function refresh(response){
-		  $log.log('response='+JSON.stringify(response));
+		  //$log.log('response='+JSON.stringify(response));
 		  if(self.resourceFlag){
 			  alert(response.data.msg);
 		  }else{
@@ -277,17 +277,17 @@
 		
 		$resource 建構引數簡述:	
 			
-			第一個引數:RESTful url template
-			第二個引數:
-				Given a template /path/:verb and parameter {verb:'greet', salutation:'Hello'} 
-				results in URL /path/greet?salutation=Hello.
-				If the defaultParam object is {someParam: '@someProp'} 
-				then the value of someParam will be data.someProp.
-				給第三個引數使用的 common url template 轉換
-				如果有定義 {key:'@xx'}，則引入的 data 的部分會是 data.xx for url template 轉換
-			注意:以上兩個引數皆可於第三個引數覆寫
-			
-			第三個引數:新增的方法物件			
+		第一個引數:RESTful url template
+		第二個引數:
+			Given a template /path/:verb and parameter {verb:'greet', salutation:'Hello'} 
+			results in URL /path/greet?salutation=Hello.
+			If the defaultParam object is {someParam: '@someProp'} 
+			then the value of someParam will be data.someProp.
+			給第三個引數使用的 common url template 轉換
+			如果有定義 {key:'@xx'}，則引入的 data 的部分會是 data.xx for url template 轉換
+		注意:以上兩個引數皆可於第三個引數覆寫
+		
+		第三個引數:新增的方法物件			
     */
 	kbApp.factory('ResourceService',['$resource',function($resource){
 		return $resource('/api/note/:id',{ id:'@id'},{
@@ -302,6 +302,42 @@
 				isArray : true
 			}
 		});
+	}]);
+			
+	/*
+		angularjs 請求/回應 攔截器 see >>> https://docs.angularjs.org/api/ng/service/$http#interceptors
+		可覆寫四個定義的方法 request、requestError、response、responseError
+		如果是攔截正確的部分，引入參數(config/response)直接return即可
+		如果是攔截異常的部分，使用$q.reject(data)確保下一個promise鏈結可進入錯誤處理
+	*/
+	kbApp.factory('NodeServerInterceptor',['$q','$log',function($q,$log){
+		return {
+			request : function(config){
+				var logStr = config.method+' '+config.url;
+				if(config.data){
+					logStr += ' data:'+JSON.stringify(config.data)
+				}
+				$log.log(logStr);
+				return config;
+			},
+			
+			responseError : function(responseRejection){
+				$log.log('NodeServerInterceptor catch response error : '+JSON.stringify(responseRejection));
+				if(responseRejection.status == 403){
+					//redirect to login page
+				}
+				return $q.reject(responseRejection);
+			}
+		}
+	}]);
+	
+	/*
+		使用 $httpProvider ，依據順序加到攔截器的陣列
+		攔截器作用順序也依據加到 $httpProvider 的順序呼叫
+	*/
+	kbApp.config(['$httpProvider',function($httpProvider){
+		//引入interceptor
+		$httpProvider.interceptors.push('NodeServerInterceptor');
 	}]);
   </script>
 </body>
