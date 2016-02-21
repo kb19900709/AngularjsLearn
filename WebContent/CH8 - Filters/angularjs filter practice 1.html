@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <meta charset="utf-8">
+  <title>CH8</title>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+  <!-- 
+  	filter : 格式化資料並顯示在畫面上，但是不改變model的值 
+  	default filter in ng see >>> https://docs.angularjs.org/api/ng/filter
+  	一般filter表示 {{ expression | filter1 }}
+  	多重filter表示 {{ expression | filter1 | filter2 }} 
+  	以此類推
+  -->
+  
+  <!-- 
+  	number filter，帶千分號若有小數位則至多四捨五入至小數點第三位 
+  	若有帶數字屬性變數則是自動四捨五入至該變數的位數
+  -->
+  Amount as number : <span ng-bind="ctrl.amount | number"></span><hr/>
+  Amount as number and with 4 decimals : <span ng-bind="ctrl.amount | number:4"></span><hr/>
+  
+  <!-- currency filter，若有帶屬性變數則是修改瀏覽器預設貨幣符號或是文字 -->
+  Total cost as a currency : <span ng-bind="ctrl.totalCost | currency"></span><hr/>
+  Total cost in NT : <span ng-bind="ctrl.totalCost | currency:'NT '"></span><hr/>
+  
+  <!-- 簡單的大小寫轉換filter -->
+  My name uppercase : <span ng-bind="ctrl.myName | uppercase"></span><hr/>
+  My name lowercase : <span ng-bind="ctrl.myName | lowercase"></span><hr/>
+  
+  <!-- 此處表達的是ctrl.myName小寫轉換以後再限制至顯示5個字元 -->
+  My name lowercase and limit 5: <span ng-bind="ctrl.myName | lowercase | limitTo:5"></span><hr/>
+  
+  <!-- JSON filter，在畫面上直接以文字輸出該物件(JSON.stringify(obj)) -->
+  Obj print : <span ng-bind="ctrl.obj | json"></span><hr/>
+  
+  <!-- date filter see >>> https://docs.angularjs.org/api/ng/filter/date -->
+  Start time : <span ng-bind="ctrl.startTime"></span><hr/>
+  Start time type default : <span ng-bind="ctrl.startTime | date"></span><hr/>
+  Start time type short : <span ng-bind="ctrl.startTime | date:'short' "></span><hr/>
+  Start time type medium : <span ng-bind="ctrl.startTime | date:'medium' "></span><hr/>
+  Start time type custom : <span ng-bind="ctrl.startTime | date:'yyyy/MM/dd' "></span><hr/>  
+  
+  <script>
+    var kbApp = angular.module('kbApp',[]);
+    kbApp.controller('MainCtrl',[function(){
+      var self = this;
+      self.amount = 1024.1718;
+      self.totalCost = 2048;
+      self.myName = 'Kevin Liao';
+      self.startTime = new Date();
+      self.obj = {
+        mySkill : 'angularjs ,zk ,spring'
+        ,mySport : 'basketball'
+      }
+    }]);
+  </script>
+</body>
+</html>
