@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <meta charset="utf-8">
+  <title>CH8</title>
+  <style>
+    .header{
+      background-color:#D9FFFF;
+    }
+  </style>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+  Click header to append sort
+  <table width="30%" cellspacing="1" border="1" cellpadding="1">
+    <tr>
+      <td class="header" ng-click="ctrl.sort('label')">Label</td>
+      <td class="header" ng-click="ctrl.sort('type')">Type</td>
+      <td class="header" ng-click="ctrl.sort('done')">Done</td>
+    </tr>
+    <tr ng-repeat="note in ctrl.notes 
+                   | filter:ctrl.filterOptions[ctrl.currentFilterType]
+                   | orderBy:ctrl.sortArray 
+                   | limitTo:ctrl.limitSize">
+      <td ng-bind="note.label"></td>
+      <td ng-bind="note.type"></td>
+      <td ng-bind="note.done"></td>
+    </tr>
+  </table>
+  <br/><br/>
+  Order by : <sapn ng-bind="ctrl.sortArray | json"></sapn>&emsp;
+  <button ng-click="ctrl.clearSortArray()">clear</button>
+  <br/><br/>
+  Limit size : <input type="number" ng-model="ctrl.limitSize">
+  <br/><br/>
+  Filter type : 
+  <button ng-click="ctrl.changeFilterType('string')">string</button>
+  <button ng-click="ctrl.changeFilterType('object')">object</button>
+  <button ng-click="ctrl.changeFilterType('function')">function</button>
+  
+  <script>
+    var kbApp = angular.module('kbApp',[]);
+    kbApp.controller('MainCtrl',[function(){
+      var self = this;
+      self.notes = [
+        {label: 'FC Todo', type: 'chore', done: false},
+        {label: 'FT Todo', type: 'task', done: false},
+        {label: 'FF Todo', type: 'fun', done: true},
+        {label: 'SC Todo', type: 'chore', done: true},
+        {label: 'ST Todo', type: 'task', done: true},
+        {label: 'SF Todo', type: 'fun', done: true},
+        {label: 'TC Todo', type: 'chore', done: false},
+        {label: 'TT Todo', type: 'task', done: false},
+        {label: 'TF Todo', type: 'fun', done: false}
+      ];
+      self.limitSize = 6;
+      
+      var sort = 0;
+      self.sortArray = [];
+      self.sort = function(sortType){
+
+        var appendFlag = true;
+        var index = 0;
+        for(var i = 0;i<self.sortArray.length;i++){
+          var type = self.sortArray[i];
+          if(type.substring(1) == sortType){
+            appendFlag = false;
+            index = i;
+          }
+        }
+        
+        if(sort % 2 == 1){
+          if(appendFlag){
+            self.sortArray.push('+'+sortType);
+          }else{
+            self.sortArray.splice(index,1,'+'+sortType);
+          }
+        }else{
+          if(appendFlag){
+            self.sortArray.push('-'+sortType);
+          }else{
+            self.sortArray.splice(index,1,'-'+sortType);
+          }
+        }
+        sort++;
+      }
+      
+      self.clearSortArray = function(){
+        self.sortArray = [];
+      }
+      
+      self.filterOptions = {
+        "string": '',
+        "object": {done: false, label: 'C'},
+        "function": function(note) {
+          return note.type == 'task' && note.done == false;
+        }
+      };
+      
+      self.currentFilterType = 'string';
+      self.changeFilterType = function(type){
+        self.currentFilterType = type;
+      }
+    }]);
+  </script>
+</body>
+</html>
