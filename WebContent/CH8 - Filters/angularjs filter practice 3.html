@@ -10,26 +10,54 @@
   <br><br>
   Test uppercase : <input type="text" ng-model="ctrl.testObj.uppercase">
   <br><br>
+  Test custom filter(non filter) : <sapn ng-bind="ctrl.customTime"></sapn><br>
+  Test custom filter(filter) : <sapn ng-bind="ctrl.customTime | calculateTime"></sapn>
+  <br><br>
   <button ng-click="ctrl.getTestObj()">get test obj</button>&emsp;
-  Test Object : <span ng-bind="ctrl.testObj | json"></span>
   <script>
     var kbApp = angular.module('kbApp',[]);
-    kbApp.controller('MainCtrl',['dateFilter','uppercaseFilter',function(dateFilter,uppercaseFilter){
+    kbApp.controller('MainCtrl',['dateFilter','uppercaseFilter','calculateTimeFilter',function(dateFilter,uppercaseFilter,calculateTimeFilter){
       var self = this;
       self.testObj = {
         date : null
+        ,dateFormat : null
         ,uppercase : null
       }
+      self.customTime = new Date(2016, 8, 9);
       
       self.getTestObj = function(){
-        if(self.testObj.date){
-          self.testObj.date = dateFilter(self.testObj.date,'yyyy/MM/dd');
+        var tempObj = angular.copy(self.testObj);
+        if(tempObj.date){
+          tempObj.dateFormat = calculateTimeFilter(tempObj.date);
+          tempObj.date = dateFilter(tempObj.date,'yyyy/MM/dd');
         }
-        if(self.testObj.uppercase){
-          self.testObj.uppercase = uppercaseFilter(self.testObj.uppercase);
+        if(tempObj.uppercase){
+          tempObj.uppercase = uppercaseFilter(tempObj.uppercase);
         }
+        alert(JSON.stringify(tempObj));
       }
     }]);
+    
+    kbApp.filter('calculateTime',function(){
+      
+      function formatFloat(num, pos){
+        var size = Math.pow(10, pos);
+        return Math.round(num * size) / size;
+      }
+      
+      return function(ts){
+        var now = new Date().getTime();
+        var target = ts.getTime();
+        var oneDay = 1000*60*60*24;
+        var resultTime = (now-target)/oneDay;
+        if(resultTime > 0){
+          return formatFloat(resultTime,2)+'天前';
+        }else{
+          resultTime = -resultTime;
+          return formatFloat(resultTime,2)+'天後';
+        }
+      }
+    });
   </script>
 </body>
 </html>
