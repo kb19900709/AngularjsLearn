@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <meta charset="utf-8">
+  <title>CH8</title>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+  Test date : <input type="date" ng-model="ctrl.testObj.date">
+  <br><br>
+  Test uppercase : <input type="text" ng-model="ctrl.testObj.uppercase">
+  <br><br>
+  <button ng-click="ctrl.getTestObj()">get test obj</button>&emsp;
+  Test Object : <span ng-bind="ctrl.testObj | json"></span>
+  <script>
+    var kbApp = angular.module('kbApp',[]);
+    kbApp.controller('MainCtrl',['dateFilter','uppercaseFilter',function(dateFilter,uppercaseFilter){
+      var self = this;
+      self.testObj = {
+        date : null
+        ,uppercase : null
+      }
+      
+      self.getTestObj = function(){
+        if(self.testObj.date){
+          self.testObj.date = dateFilter(self.testObj.date,'yyyy/MM/dd');
+        }
+        if(self.testObj.uppercase){
+          self.testObj.uppercase = uppercaseFilter(self.testObj.uppercase);
+        }
+      }
+    }]);
+  </script>
+</body>
+</html>
