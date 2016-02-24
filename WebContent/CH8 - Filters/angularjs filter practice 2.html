@@ -18,6 +18,15 @@
       <td class="header" ng-click="ctrl.sort('type')">Type</td>
       <td class="header" ng-click="ctrl.sort('done')">Done</td>
     </tr>
+    <!-- 
+      多重filter表示 {{ expression | filter1 | filter2 }} 
+      filter:
+        字串:則掃描所有鍵值對的值，模糊比對
+        物件:掃描物件屬性是否相符，若是字串則也是模糊比對
+        方法:可帶入該物件做精確的比對，回傳false則不顯示該結果
+      orderBy:[+-field] asc/desc
+      limitTo:如果過濾對象是陣列則該陣列顯示對應引數的數量
+    -->
     <tr ng-repeat="note in ctrl.notes 
                    | filter:ctrl.filterOptions[ctrl.currentFilterType]
                    | orderBy:ctrl.sortArray 
@@ -90,9 +99,9 @@
       }
       
       self.filterOptions = {
-        "string": '',
-        "object": {done: false, label: 'C'},
-        "function": function(note) {
+        'string': '',
+        'object': {done: false, label: 'C'},
+        'function': function(note) {
           return note.type == 'task' && note.done == false;
         }
       };

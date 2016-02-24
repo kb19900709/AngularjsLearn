@@ -10,12 +10,27 @@
   <br><br>
   Test uppercase : <input type="text" ng-model="ctrl.testObj.uppercase">
   <br><br>
+  <!-- 
+    自定義Filter測試段 
+    html宣告 : 
+      xxx | filter       >>> return function(xxx)
+      xxx | filter:a     >>> return function(xxx,a)
+      xxx | filter:a:b   >>> return function(xxx,a,b)
+   -->
   Test custom filter(non filter) : <sapn ng-bind="ctrl.customTime"></sapn><br>
   Test custom filter(filter) : <sapn ng-bind="ctrl.customTime | calculateTime"></sapn>
   <br><br>
+  <!-- 取得filter後的物件 -->
   <button ng-click="ctrl.getTestObj()">get test obj</button>&emsp;
   <script>
     var kbApp = angular.module('kbApp',[]);
+    /*
+      filter也可以以注入的形式到 controller、service、filter 裡面使用
+      注入方式 filterName 後加上Filter後綴即可
+      使用方式 filter(target,Object... param) 
+      target為過濾目標物件，param為選擇性引數(看filter提供的API)
+      以下範例 calculateTimeFilter 為自定義Filter，其他是系統預設filter
+    */
     kbApp.controller('MainCtrl',['dateFilter','uppercaseFilter','calculateTimeFilter',function(dateFilter,uppercaseFilter,calculateTimeFilter){
       var dateFormatPattern = 'yyyy/MM/dd';
       var self = this;
@@ -38,40 +53,45 @@
       }
     }]);
     
+    //自定義filter & 注入numberFilter
     kbApp.filter('calculateTime',['numberFilter',function(numberFilter){
-      
+     
       var oneDay = 1000*60*60*24;
       var oneMonth = oneDay*30;
       var oneYear = oneDay*365;
       
-      var dateMap = {
+      var dateChMap = {
         day:'天'
         ,month:'月'
         ,year:'年'
       }
       
+      //現在時間扣掉傳入時間再依據單位(day/month/year default:day)取值四捨五入到小數點兩位
+      var dateFormat = {
+        day : function(now,target){
+          return numberFilter((now-target)/oneDay,2);
+        }
+        ,month : function(now,target){
+          return numberFilter((now-target)/oneMonth,2);
+        }
+        ,year : function(now,target){
+          return numberFilter((now-target)/oneYear,2);
+        }
+      }
+      
+      //產生回傳字串
       function genResultString(result,unit){
         var number = result>0?result:-result;
-        var unitFormat = dateMap[unit || 'day'];
+        var unitFormat = dateChMap[unit || 'day'];
         var ab = result>0?'前':'後';
         return number+unitFormat+ab;
       }
       
+      //若unit沒有傳入則預設單位:day
       return function(ts,unit){
         var now = new Date().getTime();
         var target = ts.getTime();
-        var result;
-        switch(unit || 'day'){
-          case 'day':
-            result = numberFilter((now-target)/oneDay,2);
-            break;
-          case 'month' :
-            result = numberFilter((now-target)/oneMonth,2);
-            break;
-          case 'year' :
-            result = numberFilter((now-target)/oneYear,2);
-            break;
-        }
+        var result = dateFormat[unit || 'day'](now,target);
         return genResultString(result,unit);
       }
     }]);
