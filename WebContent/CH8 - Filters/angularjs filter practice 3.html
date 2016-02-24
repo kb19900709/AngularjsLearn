@@ -17,19 +17,19 @@
   <script>
     var kbApp = angular.module('kbApp',[]);
     kbApp.controller('MainCtrl',['dateFilter','uppercaseFilter','calculateTimeFilter',function(dateFilter,uppercaseFilter,calculateTimeFilter){
+      var dateFormatPattern = 'yyyy/MM/dd';
       var self = this;
+      self.customTime = new Date(2016, 8, 9);
       self.testObj = {
         date : null
-        ,dateFormat : null
         ,uppercase : null
       }
-      self.customTime = new Date(2016, 8, 9);
       
       self.getTestObj = function(){
         var tempObj = angular.copy(self.testObj);
         if(tempObj.date){
-          tempObj.dateFormat = calculateTimeFilter(tempObj.date);
-          tempObj.date = dateFilter(tempObj.date,'yyyy/MM/dd');
+          tempObj.dateAfterFilter = calculateTimeFilter(tempObj.date);
+          tempObj.date = dateFilter(tempObj.date,dateFormatPattern);
         }
         if(tempObj.uppercase){
           tempObj.uppercase = uppercaseFilter(tempObj.uppercase);
@@ -38,26 +38,40 @@
       }
     }]);
     
-    kbApp.filter('calculateTime',function(){
+    kbApp.filter('calculateTime',['numberFilter',function(numberFilter){
       
-      function formatFloat(num, pos){
-        var size = Math.pow(10, pos);
-        return Math.round(num * size) / size;
+      var oneDay = 1000*60*60*24;
+      var oneMonth = oneDay*30;
+      var oneYear = oneDay*365;
+      
+      var dateMap = {
+        day:'天'
+        ,month:'月'
+        ,year:'年'
       }
       
-      return function(ts){
+      function genResultString(result,unit){
+        return (result>0?result:-result)+dateMap[unit || 'day']+(result>0?'前':'後');
+      }
+      
+      return function(ts,unit){
         var now = new Date().getTime();
         var target = ts.getTime();
-        var oneDay = 1000*60*60*24;
-        var resultTime = (now-target)/oneDay;
-        if(resultTime > 0){
-          return formatFloat(resultTime,2)+'天前';
-        }else{
-          resultTime = -resultTime;
-          return formatFloat(resultTime,2)+'天後';
+        var result;
+        switch(unit || 'day'){
+          case 'day':
+            result = numberFilter((now-target)/oneDay,2);
+            break;
+          case 'month' :
+            result = numberFilter((now-target)/oneMonth,2);
+            break;
+          case 'year' :
+            result = numberFilter((now-target)/oneYear,2);
+            break;
         }
+        return genResultString(result,unit);
       }
-    });
+    }]);
   </script>
 </body>
 </html>
