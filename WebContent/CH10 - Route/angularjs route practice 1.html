@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="kbApp">
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-route.js"></script>
   <meta charset="utf-8">
   <title>CH10</title>
@@ -16,7 +16,10 @@
   <!-- ng-view 標記路由位置  -->
   <div ng-view></div>
   <script>
-    //簡易路由實現，透過選擇性模組ngRoute配合ng-view標籤實作
+    /*
+      簡易路由實現，透過選擇性模組ngRoute配合ng-view標籤實作
+      按上下頁檢查是否有在瀏覽器留下歷史紀錄
+    */
     var kbApp = angular.module('kbApp',['ngRoute']);
     
     // $routeProvider see >>> https://docs.angularjs.org/api/ngRoute/provider/$routeProvider
