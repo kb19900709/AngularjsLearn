@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-route.js"></script>
+  <meta charset="utf-8">
+  <title>CH10</title>
+</head>
+<body>
+  <ul>
+    <li><a href="#/">home</a></li>
+    <li><a href="#/first">first</a></li>
+    <li><a href="#/second">second</a></li>
+    <li><a href="#/third">third</a></li>
+  </ul>
+  <!-- ng-view 標記路由位置  -->
+  <div ng-view></div>
+  <script>
+    //簡易路由實現，透過選擇性模組ngRoute配合ng-view標籤實作
+    var kbApp = angular.module('kbApp',['ngRoute']);
+    
+    // $routeProvider see >>> https://docs.angularjs.org/api/ngRoute/provider/$routeProvider
+    kbApp.config(['$routeProvider',function($routeProvider){
+      $routeProvider.when('/',{
+        template : '<H1>Home page</H1>'
+      }).when('/first',{
+        template : '<H2>First page</H2>'
+      }).when('/second',{
+        template : '<H3>Second page</H3>'
+      }).otherwise({redirectTo:'/'});
+      // otherwise 可接受字串引數且自動mapping至redirectTo
+        
+    }]);
+  </script>
+</body>
+</html>
