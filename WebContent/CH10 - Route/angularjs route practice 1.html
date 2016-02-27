@@ -11,9 +11,10 @@
     <li><a href="#/">home</a></li>
     <li><a href="#/first">first</a></li>
     <li><a href="#/second">second</a></li>
-    <li><a href="#/third">third</a></li>
+    <li><a href="#/third/jlo">third</a></li>
+    <li><a href="#/fourth">fourth</a></li>
   </ul>
-  <!-- ng-view 標記路由位置  -->
+  <!-- ng-view 標記路由位置，一個SPA僅允許一個ng-view directive  -->
   <div ng-view></div>
   <script>
     /*
@@ -23,13 +24,31 @@
     var kbApp = angular.module('kbApp',['ngRoute']);
     
     // $routeProvider see >>> https://docs.angularjs.org/api/ngRoute/provider/$routeProvider
-    kbApp.config(['$routeProvider',function($routeProvider){
+    kbApp.value('Constant',{myConstant:13})
+      .config(['$routeProvider',function($routeProvider){
       $routeProvider.when('/',{
         template : '<H1>Home page</H1>'
       }).when('/first',{
-        template : '<H2>First page</H2>'
+        template : '<H2>The first page</H2>'
+        ,controller:['$log',function($log){
+          $log.log('route controller catch');
+        }]
       }).when('/second',{
-        template : '<H3>Second page</H3>'
+        template : '<H3>The second page</H3>'
+        ,resolve : {
+          takeConstant : ['Constant',function(Constant){
+            return Constant.myConstant*4
+          }]
+        }
+        ,controller : ['$log','takeConstant',function($log,takeConstant){
+          $log.log('My constant = '+takeConstant);
+        }] 
+      }).when('/third/:name',{
+        template : '<H4>The third page</H4>'
+        ,controller : ['$log','$routeParams',function($log,$routeParams){
+          $log.log('name='+$routeParams.name);
+        }] 
+        //注意:$routeParams 提供的變數型別全部都是string
       }).otherwise({redirectTo:'/'});
       // otherwise 可接受字串引數且自動mapping至redirectTo
         
