@@ -35,6 +35,13 @@
         }]
       }).when('/second',{
         template : '<H3>The second page</H3>'
+        /*
+          如果 resolve 物件含式傳回值，視此resolve成功
+          如果 resolve 任一物件含式傳回 promise 物件
+          則angularjs會等待其回傳，多筆的話將等待全部執行完
+          如果任一 promise 傳回非 200 http status 則視為失敗
+          失敗:route失效，angularjs將阻止載入該頁
+        */
         ,resolve : {
           takeConstant : ['Constant',function(Constant){
             return Constant.myConstant*4
