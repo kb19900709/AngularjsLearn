@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+  <meta charset="utf-8">
+  <title>CH11</title>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+  <div ng-repeat="item in ctrl.stocks">
+    <stock-widget stock-data="item"></stock-widget>
+  </div>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <script src="app.js"></script>
+  <script src="directive.js"></script>
+  <script src="controller.js"></script>
+</body>
+</html>
