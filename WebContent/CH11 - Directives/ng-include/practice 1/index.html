@@ -5,11 +5,14 @@
   <title>CH11</title>
 </head>
 <body ng-controller="MainCtrl as ctrl">
+  <!-- ngInclude see >>> https://docs.angularjs.org/api/ng/directive/ngInclude -->
   <div ng-repeat="stock in ctrl.stocks">
+    <!-- 引入模板 -->
     <div ng-include="ctrl.repeatTemplate"></div>
   </div>
   
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <!-- 正常寫法:引入app and controller (關注點必須分離) -->
   <script src="app.js"></script>
   <script src="controller.js"></script>
 </body>

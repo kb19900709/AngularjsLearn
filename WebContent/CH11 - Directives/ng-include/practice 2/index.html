@@ -6,6 +6,7 @@
 </head>
 <body ng-controller="MainCtrl as ctrl">
   <div ng-repeat="item in ctrl.stocks">
+    <!-- 自定義的directive，包含一個屬性 stock-data 且可傳遞json物件 -->
     <stock-widget stock-data="item"></stock-widget>
   </div>
   

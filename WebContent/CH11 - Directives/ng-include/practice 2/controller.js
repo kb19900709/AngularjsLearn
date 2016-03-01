@@ -1,5 +1,10 @@
+/*
+ * 取得模組實體並建立一個Controller
+ * 相較於上一個範例少了模板位置以及模板相依函式
+ */
 angular.module('kbApp')
 .controller('MainCtrl',[function(){
+	
     var self = this;
     
     self.stocks = [

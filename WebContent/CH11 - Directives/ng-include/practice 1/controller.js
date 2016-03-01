@@ -1,3 +1,4 @@
+//取得模組實體並建立一個Controller
 angular.module('kbApp')
 .controller('MainCtrl',[function(){
     var self = this;
@@ -14,5 +15,6 @@ angular.module('kbApp')
           stock.previous) * 100);
     };
     
+    //模板位置 src
     self.repeatTemplate = 'stockTemplate.html';
   }]);

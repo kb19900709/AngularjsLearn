@@ -1,6 +1,8 @@
 ************************************************<br/>
+<!-- 在此份HTML上範疇內的 stockData 物件-->
 Name : <span ng-bind="stockData.name"></span><br/>
 Price : <span ng-bind="stockData.price | currency"></span><br/>
 Previous : <span ng-bind="stockData.previous | currency"></span><br/>
+<!-- 在此份HTML上範疇內的 getChange 函式-->
 After change : <span ng-bind="getChange(stockData)+'%'"></span><br/>
 ************************************************<br/><br/>
