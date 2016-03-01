@@ -83,138 +83,138 @@
     //You can think of a module as a container for the different parts of your app – controllers, services, filters, directives, etc.
     var kbApp = angular.module('kbApp',['ngResource']);
     kbApp.controller('MainCtrl',['ItemService','ResourceService','$log',function(itemSrv,resourceSrv,$log){
-      var self = this;
-      //true:使用$http建構service(ItemService) ,false:使用$resource建構service(ResourceService)
-      self.resourceFlag = false;
-      //for 物件清單
-      self.items = [];
-      //for 編輯物件
-	  self.item = {};
-      //for ID查詢
-	  self.id = null;
-      //for 條件查詢
-	  self.queryParams = {
-			  label : '',
-			  author : ''
-	  }
+	var self = this;
+	//true:使用$http建構service(ItemService) ,false:使用$resource建構service(ResourceService)
+	self.resourceFlag = false;
+	//for 物件清單
+	self.items = [];
+	//for 編輯物件
+	self.item = {};
+	//for ID查詢
+	self.id = null;
+	//for 條件查詢
+	self.queryParams = {
+	  label : '',
+	  author : ''
+	}
 	  
-      //條件查詢物件
-	  self.getItemByParams = function(){
+        //條件查詢物件
+	self.getItemByParams = function(){
+	  if(self.resourceFlag){
+		  itemSrv.queryByParam(self.queryParams).then(function(response){
+			  self.items = response.data;
+		  },function(error){
+			  $log.log('call ItemService.queryByParam fail');
+		  });
+	  }else{
+		  resourceSrv.queryByParam(self.queryParams,function(dataList){
+			  self.items = dataList;
+		  },function(error){
+			  $log.log('call ResourceService.queryByParam fail');
+		  }) 
+	  }
+	}
+	  
+        //ID查詢物件
+	self.getItem = function(){
+	  if(self.id){
 		  if(self.resourceFlag){
-			  itemSrv.queryByParam(self.queryParams).then(function(response){
-				  self.items = response.data;
+			  itemSrv.queryItemByID(self.id).then(function(response){
+				  self.items = [];
+				  self.items.push(response.data)
 			  },function(error){
-				  $log.log('call ItemService.queryByParam fail');
+				  $log.log('call ItemService.queryItemByID fail');
+				  alert(error.data.msg);
 			  });
 		  }else{
-			  resourceSrv.queryByParam(self.queryParams,function(dataList){
-				  self.items = dataList;
+			  resourceSrv.get({id:self.id},function(data){
+				  self.items = [];
+				  self.items.push(data)
 			  },function(error){
-				  $log.log('call ResourceService.queryByParam fail');
-			  }) 
-		  }
-	  }
+				  $log.log('call ResourceService.get fail');
+				  alert(error.data.msg);
+			  });
+		  }			  
+	  }else{
+		  alert('please input id');
+	  }   
+	}
 	  
-      //ID查詢物件
-	  self.getItem = function(){
-		  if(self.id){
-			  if(self.resourceFlag){
-				  itemSrv.queryItemByID(self.id).then(function(response){
-					  self.items = [];
-					  self.items.push(response.data)
-				  },function(error){
-					  $log.log('call ItemService.queryItemByID fail');
-					  alert(error.data.msg);
-				  });
-			  }else{
-				  resourceSrv.get({id:self.id},function(data){
-					  self.items = [];
-					  self.items.push(data)
-				  },function(error){
-					  $log.log('call ResourceService.get fail');
-					  alert(error.data.msg);
-				  });
-			  }			  
-		  }else{
-			  alert('please input id');
-		  }   
-	  }
+	//編輯前置function
+	self.editItem = function(item){
+	  self.item = angular.copy(item);
+	}
 	  
-      //編輯前置function
-	  self.editItem = function(item){
-		  self.item = angular.copy(item);
-	  }
-	  
-      //表單送出時依據是否有ID決定呼叫新增或是編輯功能
-	  self.submitItem = function(){
-		  if(self.item.id){
-			  if(self.resourceFlag){
-				  itemSrv.editItem(self.item.id,self.item).then(function(response){
-					  refresh(response);
-				  },function(error){
-					  $log.log('call ItemService.editItem fail');
-				  });
-			  }else{
-				  resourceSrv.editItem(self.item.id,self.item,function(response){
-					  refresh(response);
-				  },function(error){
-					  $log.log('call ResourceService.editItem fail');
-				  })
-			  }			  
-		  }else{
-			  if(self.resourceFlag){
-				  itemSrv.addItem(self.item).then(function(response){
-					  refresh(response);
-				  },function(error){
-					  $log.log('call ItemService.addItem fail');
-				  });
-			  }else{
-				  resourceSrv.save(self.item,function(response){
-					  refresh(response);
-				  },function(error){
-					  $log.log('call ResourceService.save fail');
-				  });
-			  }			  
-		  }  
-	  }
-	  
-      //刪除物件
-	  self.deleteItem = function(item){
+	//表單送出時依據是否有ID決定呼叫新增或是編輯功能
+	self.submitItem = function(){
+	  if(self.item.id){
 		  if(self.resourceFlag){
-			  itemSrv.deleteItem(item.id).then(function(response){
+			  itemSrv.editItem(self.item.id,self.item).then(function(response){
 				  refresh(response);
 			  },function(error){
-				  $log.log('call ItemService.deleteItem fail');
+				  $log.log('call ItemService.editItem fail');
 			  });
 		  }else{
-			  resourceSrv.delete({id:item.id},function(response){
+			  resourceSrv.editItem(self.item.id,self.item,function(response){
 				  refresh(response);
 			  },function(error){
-				  $log.log('call ResourceService.delete fail');
+				  $log.log('call ResourceService.editItem fail');
+			  })
+		  }			  
+	  }else{
+		  if(self.resourceFlag){
+			  itemSrv.addItem(self.item).then(function(response){
+				  refresh(response);
+			  },function(error){
+				  $log.log('call ItemService.addItem fail');
 			  });
-		  }		  
-	  }
-      
-      //查詢所有物件
-      self.getItems = function(){
-    	  if(self.resourceFlag){
-    		  itemSrv.queryAll().then(function(response){
-    		  	self.items = response.data;
-   	 	      },function(error){
-   	 	        $log.log('call ItemService.queryAll fail');
-   	 	      });
-    	  }else{
-    		  resourceSrv.query(function(dataList){
-    		 	//$log.log(dataList);
-    			self.items = dataList;
-    		  },function(error){
+		  }else{
+			  resourceSrv.save(self.item,function(response){
+				  refresh(response);
+			  },function(error){
+				  $log.log('call ResourceService.save fail');
+			  });
+		  }			  
+	  }  
+	}
+
+	//刪除物件
+	self.deleteItem = function(item){
+	  if(self.resourceFlag){
+		  itemSrv.deleteItem(item.id).then(function(response){
+			  refresh(response);
+		  },function(error){
+			  $log.log('call ItemService.deleteItem fail');
+		  });
+	  }else{
+		  resourceSrv.delete({id:item.id},function(response){
+			  refresh(response);
+		  },function(error){
+			  $log.log('call ResourceService.delete fail');
+		  });
+	  }		  
+	}
+
+	//查詢所有物件
+	self.getItems = function(){
+	      if(self.resourceFlag){
+	    	  itemSrv.queryAll().then(function(response){
+	    	  	self.items = response.data;
+	    	      },function(error){
+	    	        $log.log('call ItemService.queryAll fail');
+	    	      });
+	      }else{
+	    	  resourceSrv.query(function(dataList){
+	    	 	//$log.log(dataList);
+	    		self.items = dataList;
+	    	  },function(error){
 				$log.log('call ResourceService.query fail');
 			  });
-    	  }	  	  
-      }
+	      }	  	  
+	}
       
-      //response回來的時候重置畫面，包括重新搜尋物件清單以及清空編輯物件欄位
-      function refresh(response){
+	//response回來的時候重置畫面，包括重新搜尋物件清單以及清空編輯物件欄位
+	function refresh(response){
 		  //$log.log('response='+JSON.stringify(response));
 		  if(self.resourceFlag){
 			  alert(response.data.msg);
@@ -224,70 +224,70 @@
 		  self.getItems();
 		  self.item = {};
 	  }
-      
-      //ctrl初始化的時候先執行這個function
-      self.getItems();
-      
-    }]);
 	
-    //$http see >>> https://docs.angularjs.org/api/ng/service/$http
+	//ctrl初始化的時候先執行這個function
+	self.getItems();
+	
+	}]);
+	
+	//$http see >>> https://docs.angularjs.org/api/ng/service/$http
 	kbApp.factory('ItemService',['$http',function($http){
-      return {
-        queryAll : function(){
-          return $http.get('/api/note');
-        },
-        
-        queryByParam : function(item){
-          return $http.post('/api/note/queryByParam',item)
-        },
-        
-        queryItemByID : function(id){
-          return $http.get('/api/note/'+id); 	
-        },
-        
-        addItem : function(item){
-          return $http.post('/api/note',item);
-        },
-        
-        editItem : function(id,item){
-          return $http.put('/api/note/'+id,item);
-        },
-        
-        deleteItem : function(id){
-          return $http.delete('/api/note/'+id);
-        }
-      }
-    }]);
+		return {
+			queryAll : function(){
+			  return $http.get('/api/note');
+			},
+			
+			queryByParam : function(item){
+			  return $http.post('/api/note/queryByParam',item)
+			},
+			
+			queryItemByID : function(id){
+			  return $http.get('/api/note/'+id); 	
+			},
+			
+			addItem : function(item){
+			  return $http.post('/api/note',item);
+			},
+			
+			editItem : function(id,item){
+			  return $http.put('/api/note/'+id,item);
+			},
+			
+			deleteItem : function(id){
+			  return $http.delete('/api/note/'+id);
+			}
+		}
+	}]);
 	
     /*
     	如果server端有提供RESTful APIs，建議使用$resource快速開發
-		此範例編寫 ItemService 等價於 ResourceService
-		程式架構上$resource更簡潔
+	此範例編寫 ItemService 等價於 ResourceService
+	程式架構上$resource更簡潔
 		
     	$resource see >>> https://docs.angularjs.org/api/ngResource/service/$resource
-		使用$resource建構後會自動引入以下方法到回傳的物件上
+	使用$resource建構後會自動引入以下方法到回傳的物件上
 		
-    	{ 'get':    {method:'GET'},
-		  'save':   {method:'POST'},
-		  'query':  {method:'GET', isArray:true},
-		  'remove': {method:'DELETE'},
-		  'delete': {method:'DELETE'} };
-		注意:預設並沒有提供 method:'PUT'，必須額外定義於$resource第三個引數
+	{'get':    {method:'GET'},
+	'save':   {method:'POST'},
+	'query':  {method:'GET', isArray:true},
+	'remove': {method:'DELETE'},
+	'delete': {method:'DELETE'} };
+	注意:預設並沒有提供 method:'PUT'，必須額外定義於$resource第三個引數
 		
 		
-		$resource 建構引數簡述:	
-			
-		第一個引數:RESTful url template
-		第二個引數:
-			Given a template /path/:verb and parameter {verb:'greet', salutation:'Hello'} 
-			results in URL /path/greet?salutation=Hello.
-			If the defaultParam object is {someParam: '@someProp'} 
-			then the value of someParam will be data.someProp.
-			給第三個引數使用的 common url template 轉換
-			如果有定義 {key:'@xx'}，則引入的 data 的部分會是 data.xx for url template 轉換
-		注意:以上兩個引數皆可於第三個引數覆寫
+	$resource 建構引數簡述:	
 		
-		第三個引數:新增的方法物件			
+	第一個引數:RESTful url template
+	第二個引數:
+		Given a template /path/:verb and parameter {verb:'greet', salutation:'Hello'} 
+		results in URL /path/greet?salutation=Hello.
+		If the defaultParam object is {someParam: '@someProp'} 
+		then the value of someParam will be data.someProp.
+		給第三個引數使用的 common url template 轉換
+		如果有定義 {key:'@xx'}，則引入的 data 的部分會是 data.xx for url template 轉換
+	注意:以上兩個引數皆可於第三個引數覆寫
+	
+	第三個引數:新增的方法物件			
     */
 	kbApp.factory('ResourceService',['$resource',function($resource){
 		return $resource('/api/note/:id',{ id:'@id'},{
@@ -305,10 +305,10 @@
 	}]);
 			
 	/*
-		angularjs 請求/回應 攔截器 see >>> https://docs.angularjs.org/api/ng/service/$http#interceptors
-		可覆寫四個定義的方法 request、requestError、response、responseError
-		如果是攔截正確的部分，引入參數(config/response)直接return即可
-		如果是攔截異常的部分，使用$q.reject(data)確保下一個promise鏈結可進入錯誤處理
+	angularjs 請求/回應 攔截器 see >>> https://docs.angularjs.org/api/ng/service/$http#interceptors
+	可覆寫四個定義的方法 request、requestError、response、responseError
+	如果是攔截正確的部分，引入參數(config/response)直接return即可
+	如果是攔截異常的部分，使用$q.reject(data)確保下一個promise鏈結可進入錯誤處理
 	*/
 	kbApp.factory('NodeServerInterceptor',['$q','$log',function($q,$log){
 		return {
