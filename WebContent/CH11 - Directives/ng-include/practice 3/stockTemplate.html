@@ -1,0 +1,8 @@
+************************************************<br/>
+Name : <span ng-bind="stockData.name"></span><br/>
+Price : <span ng-bind="stockData.price | currency"></span><br/>
+Previous : <span ng-bind="stockData.previous | currency"></span><br/>
+After change : <span ng-bind="getChange(stockData)+'%'"></span><br/>
+<!-- 呼叫在此scpoe的 changeStock 含式-->
+<button ng-click="changeStock()">changeStock (directive)</button><br/>
+************************************************<br/><br/>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+  <meta charset="utf-8">
+  <title>CH11</title>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+  <div ng-repeat="item in ctrl.stocks">
+    <!-- 
+      item 指到該 directive scope 的 stockData，但是是不同實體
+      所以在 directive 裡面變數的改變並不會同步於 Controller
+    -->
+    <stock-widget stock-data="item"/>
+  </div>
+  
+  <button ng-click="ctrl.changeAllStocks()">changeAllStocks(controller)</button>
+  <button ng-click="ctrl.changeTheFirst()">changeTheFirst(controller)</button>
+  <!-- 控制器改變該實體變數stocks-->
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <script src="app.js"></script>
+  <script src="directive.js"></script>
+  <script src="controller.js"></script>
+</body>
+</html>
