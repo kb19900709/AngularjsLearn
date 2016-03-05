@@ -1,0 +1,7 @@
+************************************************<br/>
+<div ng-transclude></div>
+Price : <span ng-bind="stockData.price | currency"></span><br/>
+Previous : <span ng-bind="stockData.previous | currency"></span><br/>
+After change : <span ng-bind="getChange(stockData)+'%'"></span><br/>
+<button ng-click="changeStock()">changeStock (directive)</button><br/>
+************************************************<br/><br/>

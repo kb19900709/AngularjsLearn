@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+  <meta charset="utf-8">
+  <title>CH11</title>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+
+  <div simulation-repeat="ctrl.stocks">
+  	<span>This is simulationRepeat produced</span><br/>
+  	{{stock.name}} at {{currentIndex}}
+  </div>
+  
+  <h2>ctrl.stocks</h2>
+  <div ng-repeat="item in ctrl.stocks">
+ 	 <span ng-bind="item|json"></span>
+  </div>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <script src="app.js"></script>
+  <script src="directive.js"></script>
+  <script src="controller.js"></script>
+</body>
+</html>

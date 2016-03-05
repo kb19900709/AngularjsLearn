@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+  <meta charset="utf-8">
+  <title>CH11</title>
+</head>
+<body ng-controller="MainCtrl as ctrl">
+  <div ng-repeat="item in ctrl.stocks">
+    <stock-widget 
+    	stock-data="item" 
+    	stock-index="{{$index}}"
+    	stock-change="ctrl.changeDataByIndex(index,price,previous)">
+    	<span style="color: red;">In element content being</span><br/>
+    	This is <span ng-bind="$index+1"></span> stock <br/>
+    	Name : <span ng-bind="item.name"></span><br/>
+    	<span style="color: red;">In element content end</span><br/>
+    </stock-widget>
+  </div>
+  
+  <button ng-click="ctrl.changeAllStocks()">changeAllStocks(controller)</button>
+  <button ng-click="ctrl.changeTheFirst()">changeTheFirst(controller)</button><br/><br/>
+  <h2>ctrl.stocks</h2>
+  <div ng-repeat="item in ctrl.stocks">
+ 	 <span ng-bind="item|json"></span>
+  </div>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <script src="app.js"></script>
+  <script src="directive.js"></script>
+  <script src="controller.js"></script>
+</body>
+</html>
