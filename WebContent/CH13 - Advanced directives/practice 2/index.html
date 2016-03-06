@@ -5,9 +5,12 @@
   <title>CH11</title>
 </head>
 <body ng-controller="MainCtrl as ctrl">
-
+  <span>This is simulationRepeat produced</span><br/>
+  <!-- 
+  	模擬 ng-repeat 
+  	說明在此 scope 有 stock 以及 currentIndex 等物件
+  -->
   <div simulation-repeat="ctrl.stocks">
-  	<span>This is simulationRepeat produced</span><br/>
   	{{stock.name}} at {{currentIndex}}
   </div>
   

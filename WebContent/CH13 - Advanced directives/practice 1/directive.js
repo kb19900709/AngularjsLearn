@@ -2,7 +2,11 @@ angular.module('kbApp')
 .directive('stockWidget',['$log',function($log){
 	$log.log('stockWidget called');
 	return {
-		transclude : true
+		/*
+		 * 若在此 directive 加入內文會完整複製
+		 * 然後插入 template or templateUrl 中的 ng-transclude
+		 */
+		transclude : true 
 		,templateUrl : 'stockTemplate.html'
 		,restrict : 'AE'
 		,scope : {
