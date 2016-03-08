@@ -1,32 +1,33 @@
 <!DOCTYPE html>
 <html ng-App="kbApp">
+
 <head>
-  <meta charset="utf-8">
-  <title>CH13</title>
+    <meta charset="utf-8">
+    <title>CH13</title>
 </head>
+
 <body ng-controller="MainCtrl as ctrl">
-  
-  <tabs>
-    <tab title="firstTab" ng-show="selected">
-      <span ng-bind="ctrl.startTime | date:'yyyy/MM/dd'"></span>
-    </tab> 
-    <tab title="secondTab" ng-show="selected">
-      <table border="1" cellpadding="1" cellspacing="1">
-        <tr>
-          <td>name</td>
-          <td>space</td>
-        </tr>
-        <tr ng-repeat="stock in ctrl.stocks">
-          <td ng-bind="stock.name"></td>
-          <td ng-bind="stock.price"></td>
-        </tr>
-      </table>
-    </tab>
-  </tabs> 
-  
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
-  <script src="app.js"></script>
-  <script src="directive.js"></script>
-  <script src="controller.js"></script>
+    <tabs>
+        <tab title="firstTab" ng-show="selected">
+            <span ng-bind="ctrl.startTime | date:'yyyy/MM/dd'"></span>
+        </tab>
+        <tab title="secondTab" ng-show="selected">
+            <table border="1" cellpadding="1" cellspacing="1">
+                <tr>
+                    <td>name</td>
+                    <td>space</td>
+                </tr>
+                <tr ng-repeat="stock in ctrl.stocks">
+                    <td ng-bind="stock.name"></td>
+                    <td ng-bind="stock.price"></td>
+                </tr>
+            </table>
+        </tab>
+    </tabs>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+    <script src="app.js"></script>
+    <script src="directive.js"></script>
+    <script src="controller.js"></script>
 </body>
+
 </html>
