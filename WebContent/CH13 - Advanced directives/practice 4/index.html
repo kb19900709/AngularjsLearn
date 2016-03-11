@@ -1,14 +1,34 @@
 <!DOCTYPE html>
-<html ng-App="kbApp">
+<html ng-app="kbApp">
 
 <head>
     <meta charset="utf-8">
     <title>CH13</title>
+    <link rel="stylesheet" href="jquery.nouislider.css">
+    <style type="text/css">
+    .slider {
+        display: block;
+        height: 20px;
+        margin: 20px;
+    }
+    </style> 
 </head>
 
-<body>
+<body ng-controller="MainCtrl as ctrl">
+    Current value = <span ng-bind="ctrl.selectedValue"></span>
+    <br>
+    <div>
+        <no-ui-slider class="slider" range-min="500" range-max="5000" ng-model="ctrl.selectedValue" /> 
+    </div>
+    <br>
+    <input type="number" min="500" max="5000" ng-model="ctrl.textValue" />&emsp;
+    <button ng-click="ctrl.changeSelectedValue()">chage value</button>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="jquery.nouislider.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
     <script src="app.js"></script>
+    <script src="directive.js"></script>
+    <script src="controller.js"></script>
 </body>
 
 </html>
