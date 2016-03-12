@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+
+<head>
+    <meta charset="utf-8">
+    <title>CH13</title>
+    <style>
+    #phone.ng-invalid {
+        background-color: #FFD2D2;
+    }
+    
+    .warningMsg {
+        color: red;
+    }
+    </style>
+</head>
+
+<body ng-controller="MainCtrl as ctrl">
+    <!-- 使用自定義的 validate directive -->
+    <form name="userForm">
+        Validate status :
+        <span ng-bind="userForm.phone.$error.validCellPhone ? 'error':'ok'"></span>
+        <br> Taiwan cell phone :
+        <input id="phone" name="phone" type="text" ng-model="ctrl.cellPhone" valid-cell-phone>
+        <br>
+        <span ng-show="userForm.phone.$invalid" class="warningMsg">Please enter xxxx-xxx-xxx</span>
+    </form>
+    <br>
+    Current model : <span ng-bind="ctrl.cellPhone"></span>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+    <script src="app.js"></script>
+    <script src="directive.js"></script>
+    <script src="controller.js"></script>
+</body>
+
+</html>
