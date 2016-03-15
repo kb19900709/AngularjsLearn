@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+
+<head>
+    <meta charset="utf-8">
+    <title>CH13</title>
+</head>
+
+<body ng-controller="MainCtrl as ctrl">
+    <form>
+        <form-element-input label="Name :" type="text" name="uName" bind-to="ctrl.user.name">
+            <validate-dependency>required,ng-minlength="3"</validate-dependency>
+            <validate-info dependency="required">
+                Please enter your name
+            </validate-info>
+            <validate-info dependency="ng-minlength">
+                Please enter at least 3 char
+            </validate-info>
+        </form-element-input>
+        <br>
+        <br>
+        <form-element-input label="Password :" type="password" name="uPassword" bind-to="ctrl.user.password">
+            <validate-dependency>required,ng-minlength="5"</validate-dependency>
+            <validate-info dependency="required">
+                Please enter your password
+            </validate-info>
+            <validate-info dependency="ng-minlength">
+                Please enter at least 5 number
+            </validate-info>
+        </form-element-input>
+        <br>
+        <br>
+    </form>
+    <span style="color:blue;">Current user message : </span><span ng-bind="ctrl.user | json"></span>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+    <script src="app.js"></script>
+    <script src="directive.js"></script>
+    <script src="controller.js"></script>
+</body>
+
+</html>
