@@ -9,6 +9,7 @@ angular.module('kbApp')
             	var errorSupport = {
             		'required' :  'required'
             		,'ng-minlength': 'minlength'
+                    //可在這邊繼續增加更多的實作
             	};
 
             	//錯誤訊息鍵值對

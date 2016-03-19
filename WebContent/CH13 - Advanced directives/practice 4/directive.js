@@ -24,7 +24,10 @@ angular.module('kbApp')
 
                 //如果第三方元件在改變數值時，也同步改變由 ngModelCtrl 控制的 model
                 $element.on('set',function(args){
-                    //$apply see >>> https://docs.angularjs.org/api/ng/type/$rootScope.Scope#$apply
+                    /*
+                     * $apply see >>> https://docs.angularjs.org/api/ng/type/$rootScope.Scope#$apply
+                     * 執行完成之後將會觸發 digest 週期
+                     */
                 	$scope.$apply(function(){
                 		ngModelCtrl.$setViewValue($element.val());
                 	});
