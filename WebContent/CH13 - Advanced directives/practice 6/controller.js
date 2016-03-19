@@ -1,5 +1,5 @@
 angular.module('kbApp')
-    .controller('MainCtrl', ['$log', function($log) {
+    .controller('MainCtrl', [function() {
         var self = this;
         self.user = {
             name: '',
