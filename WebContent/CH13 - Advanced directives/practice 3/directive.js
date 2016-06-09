@@ -14,7 +14,7 @@ kbApp.directive('tabs', ['$log', function($log) {
         /*
          * 與子 directive 通訊使用controller
          * 注入 scope 如同 link的用法
-         * 若使用 this 則可提供子 directive 存取
+         * 若使用 this(or proxy) 則可提供子 directive 存取
          */
         controller: ['$scope', function($scope) {
             var self = this;

@@ -315,14 +315,14 @@
 			request : function(config){
 				var logStr = config.method+' '+config.url;
 				if(config.data){
-					logStr += ' data:'+JSON.stringify(config.data)
+					logStr += ' data:'+ angular.toJson(config.data)
 				}
 				$log.log(logStr);
 				return config;
 			},
 			
 			responseError : function(responseRejection){
-				$log.log('NodeServerInterceptor catch response error : '+JSON.stringify(responseRejection));
+				$log.log('NodeServerInterceptor catch response error : '+ angular.toJson(responseRejection));
 				if(responseRejection.status == 403){
 					//redirect to login page
 				}
