@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AngularJS reCaptcha test</title>
+    <link rel="stylesheet" href="">
+    <script src="../lib/angular/angular.min.js"></script>
+    <script src="../lib/angular-recaptcha/release/angular-recaptcha.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js?onload=vcRecaptchaApiLoaded&render=explicit" async defer></script>
+</head>
+
+<body ng-controller="MyCtrl as ctrl">
+    <form action="" name="myForm">
+        <div vc-recaptcha key="ctrl.publicKey"></div>
+    </form>
+    <br>
+    <button ng-disabled="myForm.$invalid">Submit</button>
+    <script>
+    var kbApp = angular.module('kbApp', ['vcRecaptcha']);
+    kbApp.controller('MyCtrl', [function() {
+        var self = this;
+        //須至 http://www.google.com/recaptcha/intro/index.html 申請key
+        self.publicKey = '6LdUu_cSAAAAAJT-SnxZm_EL_NwazPuCwgfb70Wo';
+    }]);
+    </script>
+</body>
+
+</html>

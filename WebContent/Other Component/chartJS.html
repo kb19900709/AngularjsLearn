@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AngularJS chartJS test</title>
+    <script src="../lib/angular/angular.min.js"></script>
+    <script src="../lib/Chart.js/Chart.js"></script>
+    <script src="../lib/angular-chart.js/dist/angular-chart.min.js"></script>
+    <style>
+		.showChart{
+			width: 500px; 
+			height: 500px;
+		}
+    </style>
+</head>
+
+<body>
+	<!-- Pie Chart -->
+	<div ng-controller="PieCtrl as ctrl">
+		<div class="showChart">
+			<canvas
+		    	class="chart chart-pie" 
+		    	chart-data="ctrl.data" 
+		    	chart-labels="ctrl.labels"
+		    	chart-click="ctrl.clickPieChart">
+			</canvas>
+		</div>
+	</div>
+	
+	<!-- Line Chart -->
+	<div ng-controller="LineCtrl as ctrl">
+		<div class="showChart">
+			<canvas
+				class="chart chart-line" 
+				chart-data="ctrl.data"
+				chart-labels="ctrl.labels" 
+				chart-series="ctrl.series" 
+				chart-click="ctrl.clickLineChart">
+			</canvas> 
+		</div>
+	</div>
+	
+    
+    <script>
+    var kbApp = angular.module('kbApp', ['chart.js']);
+
+    kbApp.controller('PieCtrl', [function() {
+        var self = this;
+        self.labels = ['AngularJS','jQuery','RWD','rxJS'];
+       	self.data = [50,100,120,30];
+       	self.clickPieChart = function(points, evt){
+       		console.log(points, evt); 
+       	}
+    }]);
+
+    kbApp.controller('LineCtrl', [function(){
+    	var self = this;
+    	self.labels = ["January", "February", "March", "April", "May", "June", "July"];
+    	self.series = ['Series A', 'Series B'];
+    	self.data = [
+				    	[65, 59, 80, 81, 56, 55, 40],
+				    	[28, 48, 40, 19, 86, 27, 90]
+				    ];
+		self.clickLineChart = function (points, evt) {
+			console.log(points, evt); 
+		};
+    }]);
+    </script>
+</body>
+
+</html>
