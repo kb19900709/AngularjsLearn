@@ -1,0 +1,23 @@
+{
+  "name": "KB",
+  "homepage": "https://github.com/xul4m4d93/AngularjsLearn",
+  "authors": [
+    "KB <o922431962@yahoo.com.tw>"
+  ],
+  "description": "test for Third-Party angular module",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.7",
+    "angular-recaptcha": "^3.0.3",
+    "angular-chart.js": "^0.10.2"
+  }
+}
