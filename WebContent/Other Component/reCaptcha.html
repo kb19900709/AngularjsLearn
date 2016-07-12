@@ -4,26 +4,41 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AngularJS reCaptcha test</title>
-    <link rel="stylesheet" href="">
+    <title>reCaptcha test</title>
+
     <script src="../lib/angular/angular.min.js"></script>
+
+    <!-- ReCaptcha setting -->
     <script src="../lib/angular-recaptcha/release/angular-recaptcha.min.js"></script>
     <script src="https://www.google.com/recaptcha/api.js?onload=vcRecaptchaApiLoaded&render=explicit" async defer></script>
 </head>
 
-<body ng-controller="MyCtrl as ctrl">
+<body ng-controller="ReCaptcha as ctrl">
     <form action="" name="myForm">
+        <!-- 
+            若 vc-recaptcha directive 放在 form 裡面則必須通過驗證 
+            validation key is recaptcha
+        -->
         <div vc-recaptcha key="ctrl.publicKey"></div>
     </form>
+
     <br>
+    
     <button ng-disabled="myForm.$invalid">Submit</button>
+
     <script>
     var kbApp = angular.module('kbApp', ['vcRecaptcha']);
-    kbApp.controller('MyCtrl', [function() {
+    
+    kbApp.controller('ReCaptcha', [function() {
         var self = this;
-        //須至 http://www.google.com/recaptcha/intro/index.html 申請key
+        /*
+         * 須至 http://www.google.com/recaptcha/intro/index.html 申請key
+         * 此 key 來源為為網路資源
+         */
         self.publicKey = '6LdUu_cSAAAAAJT-SnxZm_EL_NwazPuCwgfb70Wo';
     }]);
+
+    //@see https://github.com/VividCortex/angular-recaptcha
     </script>
 </body>
 
