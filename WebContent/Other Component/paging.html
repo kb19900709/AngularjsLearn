@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>paging test</title>
+
+    <!-- remember to use bootstrap css -->
+    <link type="text/css" rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.min.css" >
+    
+    <script src="../lib/angular/angular.min.js"></script>
+
+    <!-- paging setting -->
+    <script src="../lib/angular-paging/dist/paging.min.js"></script>
+</head>
+
+<body ng-controller="PagingCtrl as ctrl">
+
+	<div style="padding-left: 10px;">
+		<paging
+		  page="ctrl.pagingOptions.page" 
+		  page-size="ctrl.pagingOptions.pageSize" 
+		  total="ctrl.pagingOptions.total"
+		  show-prev-next="ctrl.pagingOptions.showPrevNext"
+		  show-first-last="ctrl.pagingOptions.showFirstLast"
+		  paging-action="ctrl.pagingOptions.pagingAction('test paging', page, pageSize, total)">
+		</paging>  
+	</div>
+
+    <script>
+    var kbApp = angular.module('kbApp', ['bw.paging']);
+    
+    kbApp.controller('PagingCtrl', [function() {
+        var self = this;
+
+        self.pagingOptions = {
+            page:1
+            ,pageSize:10
+            ,total:100
+            ,showPrevNext:true
+            ,showFirstLast:true
+            ,pagingAction:onPaging
+        };
+
+       	function onPaging(text, page, pageSize, total){
+       		console.info('text:%s ,page:%s ,pageSize:%s ,total:%s',text, page, pageSize, total);
+       	};
+    }]);
+
+    //@see https://github.com/brantwills/Angular-Paging
+    </script>
+</body>
+
+</html>
