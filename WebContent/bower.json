@@ -18,6 +18,11 @@
   "dependencies": {
     "angular": "^1.5.7",
     "angular-recaptcha": "^3.0.3",
-    "angular-chart.js": "^0.10.2"
+    "angular-chart.js": "^0.10.2",
+    "angular-ui-calendar": "^1.0.1",
+    "angular-google-maps": "^2.3.3",
+    "angular-paging": "^2.2.2",
+    "bootstrap": "^3.3.6",
+    "angular-trix": "^1.0.2"
   }
 }
