@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html ng-app="kbApp">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ui-calendar and google-maps test</title>
+
+    <!-- remember to use default fullcalendar css -->
+    <link rel="stylesheet" href="../lib/fullcalendar/dist/fullcalendar.css" />
+
+    <script src="../lib/angular/angular.min.js"></script>
+
+    <!-- Calendar Setting -->
+    <script src="../lib/jquery/dist/jquery.min.js"></script>
+    <script src="../lib/moment/min/moment.min.js"></script>
+    <script src="../lib/angular-ui-calendar/src/calendar.js"></script>
+    <script src="../lib/fullcalendar/dist/fullcalendar.min.js"></script>
+    <!-- Google Calendar API -->
+    <!-- <script src="../lib/fullcalendar/dist/gcal.js"></script> -->
+    
+    <!-- Google Map Setting -->
+    <script src='../lib/lodash/dist/lodash.min.js'></script>
+    <script src='../lib/angular-simple-logger/dist/angular-simple-logger.min.js'></script>
+    <script src='../lib/angular-google-maps/dist/angular-google-maps.min.js'></script>
+    <script src='//maps.googleapis.com/maps/api/js?sensor=false'></script>
+   
+    <!-- Google Map Size Setting -->
+    <style>
+        .angular-google-map-container { height: 400px;width: 400px }
+    </style>
+</head>
+
+<body ng-controller="CompositeCtrl as ctrl">
+    <!-- use ui-calendar with custom calendar，and any active we call them event -->
+    <div style="width: 700px;" ui-calendar="ctrl.uiConfig.calendar" ng-model="ctrl.events"></div>
+
+    <br><br>
+
+    <!-- center:中心點 、zoom:縮放等級 -->
+    <ui-gmap-google-map center='ctrl.map.center' zoom='ctrl.map.zoom'>
+        <!-- coords:標註點 -->
+        <ui-gmap-marker idKey='1' coords="ctrl.centerMarker"></ui-gmap-marker>
+    </ui-gmap-google-map>
+
+    <script>
+    var kbApp = angular.module('kbApp', ['ui.calendar','uiGmapgoogle-maps']);
+
+    kbApp.controller('CompositeCtrl', ['$http',function($http) {
+        var self = this;
+
+        //map default options
+        self.map = {
+            center: { latitude: 25.051403, longitude: 121.549749 }
+            , zoom: 14
+        };
+
+        //map default marker
+        self.centerMarker = self.map.center;
+
+        //calendar default options
+        self.uiConfig = {
+            calendar: {
+                //高度
+                height: 500,
+                //可編輯(drag)模式
+                editable: true,
+                //header設定
+                header: {
+                    left: 'title',
+                    center: '',
+                    right: 'today prev,next'
+                },
+                //監聽 event click 事件
+                eventClick: function(event, jsEvent, view){
+                	if(event.address){
+                		console.info('This address:%s',event.address);
+                        //透過 google geocode service 取得絕對位置的經緯度並標註
+                        setMaker(event.address);
+                	}
+                }
+            }
+        };
+
+        /*
+         * events setting options
+         * 
+         * title : 顯示文字
+         * start : 起始日
+         * end : 截止日
+         */
+        self.events = {
+            events: [{
+                title: 'Active',
+                start: '2016-07-11',
+                end: '2016-07-15'
+            }, {
+                title: 'JetFusion meeting',
+                start: '2016-07-21',
+                address: '舊宗路二段207號'
+            }],
+            //行事曆標註顏色
+            color: '#FFD2D2', 
+            //字體顏色
+            textColor: 'write'
+        };
+
+        function setMaker(address){
+            //geocode service @see https://developers.google.com/maps/documentation/geocoding/intro?hl=zh-
+            $http.get("https://maps.googleapis.com/maps/api/geocode/json?address="+address+"&key=yourKey")
+            .then(function(response){
+                var results = response.data.results;
+                var myGeocodeLocation = results[0];
+                if(myGeocodeLocation){
+                    var location = myGeocodeLocation.geometry.location;
+                    var maker = {
+                        latitude:location.lat
+                        ,longitude:location.lng
+                    };
+                    
+                    self.centerMarker = maker;
+                    self.map.center = maker;
+                }
+            },function(error){
+                console.info(error);
+                return undefined;
+            });
+        };
+
+        //@see https://github.com/angular-ui/ui-calendar
+        //@see http://angular-ui.github.io/angular-google-maps/#!/use
+    }]);
+    </script>
+</body>
+
+</html>
