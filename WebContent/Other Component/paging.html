@@ -17,15 +17,35 @@
 
 <body ng-controller="PagingCtrl as ctrl">
 
-	<div style="padding-left: 10px;">
-		<paging
-		  page="ctrl.pagingOptions.page" 
-		  page-size="ctrl.pagingOptions.pageSize" 
-		  total="ctrl.pagingOptions.total"
-		  show-prev-next="ctrl.pagingOptions.showPrevNext"
-		  show-first-last="ctrl.pagingOptions.showFirstLast"
-		  paging-action="ctrl.pagingOptions.pagingAction('test paging', page, pageSize, total)">
-		</paging>  
+	<div style="padding-left: 10px;padding-top: 15px;">
+
+        <div class="panel panel-default" style="width: 500px;">
+            <div class="panel-heading">User List</div>
+            <table class="table">
+                <tr>
+                    <td>#</td>
+                    <td>First Name</td>
+                    <td>Last Name</td>
+                    <td>User Name</td>
+                </tr>
+                <tr ng-repeat="user in ctrl.userList">
+                    <td>{{user.id}}</td>
+                    <td>{{user.firstName}}</td>
+                    <td>{{user.lastName}}</td>
+                    <td>{{user.userName}}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <paging
+          page="ctrl.pagingOptions.page" 
+          page-size="ctrl.pagingOptions.pageSize" 
+          total="ctrl.pagingOptions.total"
+          show-prev-next="ctrl.pagingOptions.showPrevNext"
+          show-first-last="ctrl.pagingOptions.showFirstLast"
+          paging-action="ctrl.pagingOptions.pagingAction('test paging', page, pageSize, total)">
+        </paging>
+
 	</div>
 
     <script>
@@ -33,6 +53,25 @@
     
     kbApp.controller('PagingCtrl', [function() {
         var self = this;
+
+        self.userList = [
+            {
+                id:1
+                ,firstName:'aaa'
+                ,lastName:'bbb'
+                ,userName:'ccc'
+            },{
+                id:2
+                ,firstName:'ddd'
+                ,lastName:'eee'
+                ,userName:'fff'
+            },{
+                id:3
+                ,firstName:'ggg'
+                ,lastName:'hhh'
+                ,userName:'iii'
+            }
+        ];
 
         self.pagingOptions = {
             page:1
