@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>timeline test</title>
+
+	<!-- remember to use these css -->
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../lib/angular-timeline/dist/angular-timeline.css" />
+    <link rel="stylesheet" href="../lib/angular-timeline/dist/angular-timeline-bootstrap.css" />
+    <link rel="stylesheet" href="../lib/angular-timeline/dist/angular-timeline-animations.css" />
+
+    <script src="../lib/angular/angular.min.js"></script>
+    
+    <!-- 
+    	scroll animate setting 
+    	angular-scroll-animate to trigger CSS animations when timeline events scroll into view.
+    -->
+    <script src="../lib/angular-scroll-animate/dist/angular-scroll-animate.js"></script>
+    <!-- timeline setting -->
+    <script src="../lib/angular-timeline/dist/angular-timeline.js"></script>
+
+	<!-- timeline container css -->
+    <style>
+		#timelineContainer {
+			height: 100%;
+			width: 600px;
+			overflow-x:hidden;
+			overflow-y:auto;
+			padding-left: 10px;
+			padding-top: 10px;
+			padding-bottom: 10px;
+			padding-right: 10px;
+		}
+    </style>
+</head>
+
+<body ng-controller="TimelineCtrl as ctrl">
+
+	<div id="timelineContainer">
+
+		<timeline>
+			<!-- side: left/right -->
+	        <timeline-event ng-repeat="event in ctrl.events" side="{{$index%2==0?left:right}}">
+
+	            <timeline-badge class="{{event.badgeClass}}" 
+	            	when-visible="ctrl.animateElementIn" 
+	            	when-not-visible="ctrl.animateElementOut">
+	            	<!-- event icon -->
+	                <i class="glyphicon {{event.badgeIconClass}}"></i>
+	            </timeline-badge>
+
+	            <timeline-panel class="{{event.badgeClass}}"
+	            	when-visible="ctrl.animateElementIn" 
+	            	when-not-visible="ctrl.animateElementOut">
+	            	<!-- title -->
+	                <timeline-heading>
+	                    <h4>{{event.title}}</h4>
+	                </timeline-heading>
+	                <!-- content -->
+	                <p>{{event.content}}</p>
+	            </timeline-panel>
+
+	        </timeline-event>
+	    </timeline>
+
+	</div>
+    
+
+    <script>
+    var kbApp = angular.module('kbApp', ['angular-timeline','angular-scroll-animate']);
+
+    kbApp.controller('TimelineCtrl', [function() {
+        var self = this;
+
+        self.events = [{
+            badgeClass: 'info',
+            badgeIconClass: 'glyphicon-credit-card',
+            title: 'First heading',
+            content: 'Some awesome content.'
+        }, {
+            badgeClass: 'info',
+            badgeIconClass: 'glyphicon-credit-card',
+            title: 'Second heading',
+            content: 'More awesome content.'
+        }];
+
+        // optional: not mandatory (uses angular-scroll-animate)
+        self.animateElementIn = function($el) {
+			$el.removeClass('timeline-hidden');
+			$el.addClass('bounce-in');
+		};
+
+		// optional: not mandatory (uses angular-scroll-animate)
+		self.animateElementOut = function($el) {
+			$el.addClass('timeline-hidden');
+			$el.removeClass('bounce-in');
+		};
+
+    }]);
+
+    //@see https://github.com/rpocklin/angular-timeline
+    </script>
+</body>
+
+</html>
