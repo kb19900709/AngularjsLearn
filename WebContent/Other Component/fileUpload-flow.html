@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>fileUpload-flow test</title>
+
+    <!-- remember to use bootstrap css -->
+    <link type="text/css" rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.min.css">
+
+    <script src="../lib/angular/angular.min.js"></script>
+
+    <!-- flow setting -->
+    <script src="../lib/ng-flow/dist/ng-flow-standalone.min.js"></script>
+</head>
+
+<body ng-controller="FileUploadCtrl as ctrl">
+	
+    <!-- 
+        flow-name : 將 flow 物件指到指定的 scope 
+        flow-files-submitted : 發生在檔案被增加到上傳佇列之後
+    -->
+    <div 
+    	flow-init 
+    	flow-name="ctrl.flow"
+    	flow-files-submitted="ctrl.submitted($files, $event, $flow)" 
+    	class="alert">
+
+        <span class="btn btn-default" flow-btn>上傳檔案</span>&emsp;
+        <span ng-repeat="file in ctrl.flow.files">
+            {{$index+1}}:{{file.name}}
+        </span>
+    </div>
+
+    <script>
+    var kbApp = angular.module('kbApp', ['flow']);
+
+    kbApp.config(['flowFactoryProvider', function (flowFactoryProvider) {
+        flowFactoryProvider.defaults = {
+            singleFile: true //指定單一檔案上傳
+        };
+    }]);
+
+    kbApp.controller('FileUploadCtrl', [function() {
+        var self = this;
+
+        //upload files
+        self.flow;
+
+        var re = /\.(jpg|png)$/i;  //允許的圖片副檔名 
+
+        self.submitted = function($files, $event, $flow){
+            var currentFile = $files[0];
+
+            if(!re.test(currentFile.name)){
+                currentFile.cancel();
+                alert("請上傳圖片格式 (jgp/png)");
+            }
+        };
+    }]);
+
+    //@see https://github.com/flowjs/ng-flow
+    //@see https://github.com/flowjs/flow.js?files=1
+    </script>
+</body>
+
+</html>
