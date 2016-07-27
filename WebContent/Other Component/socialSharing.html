@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html ng-app="kbApp">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>social sharing test</title>
+
+	<!-- remember to use bootstrap css -->
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.min.css">
+
+	<script src="../lib/angular/angular.min.js"></script>
+	
+	<!-- social sharing setting -->
+	<script src="../lib/jquery/dist/jquery.min.js"></script></head>
+	<script src="../lib/angulike/angulike.js"></script></head>
+
+<body ng-controller="SocialSharingCtrl as ctrl">
+
+	<div fb-like="ctrl.shareUrl"></div>
+	<br><br>
+	<div tweet-url="ctrl.shareUrl" tweet="ctrl.name"></div>
+
+	<script>
+    var kbApp = angular.module('kbApp', ['angulike']);
+
+    kbApp.controller('SocialSharingCtrl', [function() {
+        var self = this;
+        //欲分享之URL
+        self.shareUrl = 'https://github.com/xul4m4d93';
+        //for tweet 前言
+        self.name = 'This is KB github\n';
+
+        //@see http://jasonwatmore.com/post/2014/08/01/AngularJS-directives-for-social-sharing-buttons-Facebook-Like-GooglePlus-Twitter-and-Pinterest.aspx
+    }]);
+    </script>
+</body>
+</html>
