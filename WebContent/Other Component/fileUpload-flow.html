@@ -29,7 +29,7 @@
 
         <span class="btn btn-default" flow-btn>上傳檔案</span>&emsp;
         <span ng-repeat="file in ctrl.flow.files">
-            {{$index+1}}:{{file.name}}
+            {{file.name}} / {{(file.size/1024) | number:1}} kb
         </span>
     </div>
 
@@ -49,13 +49,24 @@
         self.flow;
 
         var re = /\.(jpg|png)$/i;  //允許的圖片副檔名 
+        var maxSize = 1024*10;
 
         self.submitted = function($files, $event, $flow){
             var currentFile = $files[0];
 
-            if(!re.test(currentFile.name)){
-                currentFile.cancel();
-                alert("請上傳圖片格式 (jgp/png)");
+            if(currentFile){
+                if(!re.test(currentFile.name)){
+                    currentFile.cancel();
+                    alert("請上傳圖片格式 (jgp/png)");
+                    return;
+                }
+
+                console.info(currentFile.size);
+                if(currentFile.size>maxSize){
+                    currentFile.cancel();
+                    alert("不得大於"+maxSize+"kb");
+                    return;
+                }
             }
         };
     }]);
